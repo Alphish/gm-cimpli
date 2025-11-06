@@ -26,11 +26,13 @@
   "resources":[
     {"id":{"name":"fnt_Title","path":"fonts/fnt_Title/fnt_Title.yy",},},
     {"id":{"name":"ctrl_EventDemo","path":"objects/ctrl_EventDemo/ctrl_EventDemo.yy",},},
+    {"id":{"name":"ui_SelectButton","path":"objects/ui_SelectButton/ui_SelectButton.yy",},},
     {"id":{"name":"ui_TestButton","path":"objects/ui_TestButton/ui_TestButton.yy",},},
     {"id":{"name":"rm_Home","path":"rooms/rm_Home/rm_Home.yy",},},
     {"id":{"name":"ctor_CimpliCommand","path":"scripts/ctor_CimpliCommand/ctor_CimpliCommand.yy",},},
     {"id":{"name":"ctor_CimpliEventObserver","path":"scripts/ctor_CimpliEventObserver/ctor_CimpliEventObserver.yy",},},
     {"id":{"name":"ctor_CimpliEventSubject","path":"scripts/ctor_CimpliEventSubject/ctor_CimpliEventSubject.yy",},},
+    {"id":{"name":"ctor_CimpliProperty","path":"scripts/ctor_CimpliProperty/ctor_CimpliProperty.yy",},},
     {"id":{"name":"spr_TestButton","path":"sprites/spr_TestButton/spr_TestButton.yy",},},
   ],
   "resourceType":"GMProject",
