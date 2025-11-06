@@ -4,8 +4,8 @@ test_value_changed = test_value_property.value_changed;
 observer_index = 0;
 
 add_observer_command = new CimpliCommand(function() {
-    var _observer = test_value_changed.add_callback(function(_data, _sender, _subject) {
-        show_debug_message($"Value of {_data} sent by {instanceof(_sender)} through '{_subject.name}' event.");
+    var _observer = test_value_changed.add_callback(function(_data, _sender, _ob) {
+        show_debug_message($"Value of {_data} sent by {instanceof(_sender)} was received by observer #{_ob.index}.");
     });
     _observer.index = observer_index++;
     rebuild_buttons();
