@@ -36,8 +36,17 @@ function CimpliEventSubject(_name, _sender = undefined) constructor {
         if (_index < 0)
             return false;
         
+        _observer.on_removal();
         array_delete(observers, _index, 1);
         return true;
+    }
+    
+    /// @desc Removes all observers so they're no longer notified about future events.
+    static clear_observers = function() {
+        for (var i = array_length(observers) - 1; i >= 0; i--) {
+            observers[i].on_removal();
+        }
+        array_resize(observers, 0);
     }
     
     /// @desc Sends the event to notify the observers. Event data and a sender override can be optionally provided.
