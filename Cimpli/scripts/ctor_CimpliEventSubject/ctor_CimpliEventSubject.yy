@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ctor_CimpliEventSubject",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ctor_CimpliEventSubject",
+  "parent":{
+    "name":"Cimpli",
+    "path":"folders/_Packages/Alphish/Cimpli.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
