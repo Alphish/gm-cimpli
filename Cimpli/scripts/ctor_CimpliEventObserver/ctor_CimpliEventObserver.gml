@@ -23,4 +23,9 @@ function CimpliEventObserver(_subject, _callback) constructor {
     static remove = function() {
         return subject.remove_observer(self);
     }
+    
+    /// #desc Ensures a correct state after observer removal, whatever it is for the given observer.
+    static on_removal = function() {
+        // a simple observer needs no additional removal logic
+    }
 }
