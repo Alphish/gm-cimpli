@@ -13,9 +13,8 @@ function CimpliEventObserver(_subject, _callback) constructor {
     /// @desc Handles the incoming event.
     /// @args data          Additional event data.
     /// @args sender        The entity responsible for sending the event.
-    /// @args subject       The subject sending the event.
-    static receive = function(_data, _sender, _subject) {
-        callback(_data, _sender, _subject);
+    static receive = function(_data, _sender) {
+        callback(_data, _sender, self);
     }
     
     /// @desc Removes the observer from its subject, so it no longer responds to its events.

@@ -55,7 +55,7 @@ function CimpliEventSubject(_name, _sender = undefined) constructor {
     static send = function(_data = undefined, _sender = undefined) {
         _sender ??= sender;
         for (var i = 0, _count = array_length(observers); i < _count; i++) {
-            observers[i].receive(_data, _sender, self);
+            observers[i].receive(_data, _sender);
         }
     }
 }
