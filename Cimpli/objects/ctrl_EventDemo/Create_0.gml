@@ -1,28 +1,23 @@
-subject_tested = new CimpliEventSubject("tested", id);
+test_value_property = new CimpliProperty("Lorem");
+test_value_changed = test_value_property.value_changed;
 
-event_index = 0;
 observer_index = 0;
 
-send_event_command = new CimpliCommand(function() {
-    var _index = event_index++;
-    subject_tested.send(_index);
-});
-
 add_observer_command = new CimpliCommand(function() {
-    var _observer = subject_tested.add_callback(function(_data, _sender, _subject) {
-        show_debug_message($"Value of {_data} sent by {_sender.object_index} through '{_subject.name}' event.");
+    var _observer = test_value_changed.add_callback(function(_data, _sender, _subject) {
+        show_debug_message($"Value of {_data} sent by {instanceof(_sender)} through '{_subject.name}' event.");
     });
     _observer.index = observer_index++;
     rebuild_buttons();
 }, function() {
-    return array_length(subject_tested.observers) < 5;
+    return array_length(test_value_changed.observers) < 5;
 });
 
 clear_observers_command = new CimpliCommand(function() {
-    subject_tested.clear_observers();
+    test_value_changed.clear_observers();
     rebuild_buttons();
 }, function() {
-    return array_length(subject_tested.observers) > 0;
+    return array_length(test_value_changed.observers) > 0;
 });
 
 remove_observer_command = new CimpliCommand(function(_observer) {
@@ -36,8 +31,8 @@ rebuild_buttons = function() {
             instance_destroy();
     }
     
-    array_foreach(subject_tested.observers, function(_observer, _index) {
-        instance_create_layer(240, 40 * _index, layer, ui_TestButton, {
+    array_foreach(test_value_changed.observers, function(_observer, _index) {
+        instance_create_layer(240, 100 + 40 * _index, layer, ui_TestButton, {
             text: $"Remove observer #{_observer.index}",
             command: remove_observer_command,
             command_parameter: _observer,
