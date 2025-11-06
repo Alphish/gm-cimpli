@@ -1,4 +1,10 @@
-image_blend = is_hovered ? c_yellow : c_white;
+if (!is_enabled)
+    image_blend = c_gray;
+else if (is_hovered)
+    image_blend = c_yellow;
+else
+    image_blend = c_white;
+
 draw_self();
 
 draw_set_color(image_blend);
