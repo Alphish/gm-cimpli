@@ -1,11 +1,6 @@
 /// @desc A simple implementation of the event subject, managing its observers and sending events to them.
-/// @arg {String} name          The name of the subject.
 /// @arg {Any} [sender]         The entity passed as the event sender.
-function CimpliEventSubject(_name, _sender = undefined) constructor {
-    /// @desc The name of the subject.
-    /// @returns {String}
-    name = _name;
-    
+function CimpliEventSubject(_sender = undefined) constructor {
     /// @ignore
     sender = _sender ?? self;
     
@@ -20,11 +15,11 @@ function CimpliEventSubject(_name, _sender = undefined) constructor {
         return _observer;
     }
     
-    /// @desc Creates and adds an observer executing a given callback when the event is sent. Returns the newly created observer.
-    /// @arg {Function} callback    The callback to execute upon receiving the event.
+    /// @desc Creates and adds an observer calling a given handler when the event is sent. Returns the newly created observer.
+    /// @arg {Function} handler     The function to call upon receiving the event.
     /// @returns {Struct.CimpliEventObserver}
-    static add_callback = function(_callback) {
-        var _observer = new CimpliEventObserver(self, _callback);
+    static add_handler = function(_handler) {
+        var _observer = new CimpliEventObserver(self, _handler);
         return add_observer(_observer);
     }
     
