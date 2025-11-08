@@ -22,7 +22,7 @@ The **EventHandler** function has the following arguments:
 - `sender: Any` - an entity designated as event sender, if any
 - `observer: EventObserver` - the observer receiving and handling the event
 
-Event handler doesn't return any result. Because Feather doesn't recognise exact function arguments in JSDoc, event handler is specified in JSDoc as `Function`
+Event handler doesn't return any result. Because Feather doesn't recognise exact function arguments in JSDoc, the event handler type is specified in JSDoc as `Function`
 
 The **EventSubject** interface requires the following methods:
 
@@ -32,7 +32,7 @@ The **EventSubject** interface requires the following methods:
 - `clear_observers() -> Undefined` - removes all observer so they're no longer notified
 - `send([data]: Any, [sender]: Any) -> Undefined` - sends the event with optional data and sender information for observers to handle
 
-Because Feather doesn't recognise interface types, event subject is specified in JSDoc as `Struct`
+Because Feather doesn't recognise interface types, the event subject type is specified in JSDoc as `Struct`
 
 The **EventObserver** interface requires the following methods:
 
@@ -40,15 +40,15 @@ The **EventObserver** interface requires the following methods:
 - `remove() -> Bool` - removes the observer from its subject so it won't be notified about future events; returns whether the observer was successfully removed or not
 - `on_removal() -> Undefined` - ensures the correct observer state after it has been removed from its subject
 
-Because Feather doesn't recognise interface types, event observer is specified in JSDoc as `Struct`
+Because Feather doesn't recognise interface types, the event observer type is specified in JSDoc as `Struct`
 
 ## Implementation
 
-In Cimpli library, the event subject and event handler are implemented with **CimpliEventSubject** constructor and **CimpliEventObserver** constructor, respectively.
+In Cimpli library, the event subject and event observer are implemented with **CimpliEventSubject** constructor and **CimpliEventObserver** constructor, respectively.
 
 **CimpliEventSubject** implmenents a basic immediate sending behaviour, and also sends events to its observers in the order they were added. Its constructor has the following arguments:
 
-- `[sender]: Any` - an entity designated as the default event sender; event subject itself by default
+- `[sender]: Any` - an entity designated as the default event sender; when none is given, event subject is used as the sender
 
 CimpliEventSubject implements the **EventSubject** interface in the following way:
 
@@ -66,8 +66,8 @@ CimpliEventSubject implements the **EventSubject** interface in the following wa
 CimpliEventObserver implements the **EventObserver** interface in the following way:
 
 - `receive` - calls the handler passing the given event data, the given event sender and itself
-- `remove()` - removes itself from its observed event subject
-- `on_removal()` - performs no actions
+- `remove` - removes itself from its observed event subject
+- `on_removal` - performs no actions
 
 ## Example
 
