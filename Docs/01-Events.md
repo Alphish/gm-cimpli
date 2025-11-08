@@ -119,3 +119,5 @@ response_observer = ctrl_HttpManager.response_received.add_handler(function(_res
 ```gml
 response_observer.remove();
 ```
+
+**Next:** [Commands](/Docs/02-Commands.md)
