@@ -5,9 +5,9 @@ function CimpliProperty(_initial = undefined) constructor {
     /// @returns {Any}
     value = _initial;
     
-    /// @desc The event subject for notifying about value changes.
+    /// @desc The event subject notifying about value changes.
     /// @returns {Struct}
-    value_changed = new CimpliEventSubject(nameof(value_changed), self);
+    value_changed = new CimpliEventSubject(self);
     
     /// @desc Gets the value of the property.
     /// @returns {Any}

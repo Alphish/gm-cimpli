@@ -26,7 +26,7 @@
   "resources":[
     {"id":{"name":"fnt_Log","path":"fonts/fnt_Log/fnt_Log.yy",},},
     {"id":{"name":"fnt_Title","path":"fonts/fnt_Title/fnt_Title.yy",},},
-    {"id":{"name":"ctrl_EventDemo","path":"objects/ctrl_EventDemo/ctrl_EventDemo.yy",},},
+    {"id":{"name":"ctrl_CimpliDemo","path":"objects/ctrl_CimpliDemo/ctrl_CimpliDemo.yy",},},
     {"id":{"name":"ui_Log","path":"objects/ui_Log/ui_Log.yy",},},
     {"id":{"name":"ui_SelectButton","path":"objects/ui_SelectButton/ui_SelectButton.yy",},},
     {"id":{"name":"ui_TestButton","path":"objects/ui_TestButton/ui_TestButton.yy",},},

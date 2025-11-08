@@ -38,9 +38,9 @@ function CimpliEventSubject(_sender = undefined) constructor {
     
     /// @desc Removes all observers so they're no longer notified about future events.
     static clear_observers = function() {
-        for (var i = array_length(observers) - 1; i >= 0; i--) {
-            observers[i].on_removal();
-        }
+        array_foreach(observers, function(_observer) {
+            _observer.on_removal();
+        });
         array_resize(observers, 0);
     }
     
