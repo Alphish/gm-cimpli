@@ -20,8 +20,10 @@ level_abbreviation = {
     "CRITICAL": "CRT",
 };
 
+max_logs = (room_height - 40) div 20;
+
 add_log = function(_level, _message) {
     array_push(logs, { level: _level, message: _message });
-    while (array_length(logs) > room_height div 20)
+    while (array_length(logs) > max_logs)
         array_shift(logs);
 }

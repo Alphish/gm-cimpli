@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ctor_CimpliTask",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ctor_CimpliTask",
+  "parent":{
+    "name":"Cimpli",
+    "path":"folders/_Packages/Alphish/Cimpli.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
