@@ -1,14 +1,17 @@
 test_value_property = new CimpliProperty("Lorem");
 test_value_changed = test_value_property.value_changed;
 
+logger = new UiLogger("TRACE");
+
 observer_index = 0;
 
 add_observer_command = new CimpliCommand(function() {
     var _observer = test_value_changed.add_handler(function(_data, _sender, _ob) {
-        show_debug_message($"Value of {_data} sent by {instanceof(_sender)} was received by observer #{_ob.index}.");
+        logger.log_info($"Value of {_data} sent by {instanceof(_sender)} was received by observer #{_ob.index}.");
     });
     _observer.index = observer_index++;
     rebuild_buttons();
+    logger.log_success($"Added observer #{_observer.index}");
 }, function() {
     return array_length(test_value_changed.observers) < 5;
 });
@@ -16,6 +19,7 @@ add_observer_command = new CimpliCommand(function() {
 clear_observers_command = new CimpliCommand(function() {
     test_value_changed.clear_observers();
     rebuild_buttons();
+    logger.log_warning($"All observers cleared!")
 }, function() {
     return array_length(test_value_changed.observers) > 0;
 });
@@ -23,6 +27,7 @@ clear_observers_command = new CimpliCommand(function() {
 remove_observer_command = new CimpliCommand(function(_observer) {
     _observer.remove();
     rebuild_buttons();
+    logger.log_warning($"Removed observer #{_observer.index}")
 });
 
 rebuild_buttons = function() {
