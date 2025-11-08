@@ -36,6 +36,8 @@
     {"id":{"name":"ctor_CimpliEventSubject","path":"scripts/ctor_CimpliEventSubject/ctor_CimpliEventSubject.yy",},},
     {"id":{"name":"ctor_CimpliLogger","path":"scripts/ctor_CimpliLogger/ctor_CimpliLogger.yy",},},
     {"id":{"name":"ctor_CimpliProperty","path":"scripts/ctor_CimpliProperty/ctor_CimpliProperty.yy",},},
+    {"id":{"name":"ctor_CimpliTask","path":"scripts/ctor_CimpliTask/ctor_CimpliTask.yy",},},
+    {"id":{"name":"ctor_CimpliWorker","path":"scripts/ctor_CimpliWorker/ctor_CimpliWorker.yy",},},
     {"id":{"name":"ctor_UiLogger","path":"scripts/ctor_UiLogger/ctor_UiLogger.yy",},},
     {"id":{"name":"spr_TestButton","path":"sprites/spr_TestButton/spr_TestButton.yy",},},
   ],
