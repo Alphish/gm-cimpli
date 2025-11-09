@@ -4,11 +4,11 @@
 
 # Commands
 
-A command system helps define specific actions that can be executed from various sources. In particular, commands may be linked to UI components or hotkeys, making the interaction triggering the command independent from its logic.
+A command system helps define specific actions that can be executed from various sources. In particular, commands may be linked to UI components, hotkeys, interactable entities like entities etc., making the command trigger independent from its logic.
 
 ## Interface
 
-The command system requires a single type, the **Command** interface, which requires the following methods:
+The command system consists of a single type, the **Command** interface, which requires the following methods:
 
 - `execute([parameter]: Any) -> Undefined` - performs the command logic
 - `can_execute([parameter]: Any) -> Bool` - checks if the command can be executed with the given parameter

@@ -8,7 +8,7 @@ A properties system can be used for managing and providing specific values. In p
 
 ## Interface
 
-The properties system requires a single type, the **Property** interface, which requires the following members:
+The properties system consists of a single type, the **Property** interface, which requires the following members:
 
 - `get_value() -> Any` - a method to retrieve the property value
 - `set_value(value: Any) -> Undefined` - a method to set the property value
@@ -64,3 +64,5 @@ instance_create_depth(x + 4, y + 36, depth - 10, ui_ColorSlider, { color_compone
 // apply the latest slider value to its bound property
 color_component_property.set_value(slider_value);
 ```
+
+**Next:** [Logging](/Docs/04-Logging.md)
