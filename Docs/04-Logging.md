@@ -80,3 +80,5 @@ In the output, only the success, warning, error and critical messages were writt
 [20:47:52] ERROR: This is an error message!
 [20:47:52] CRITICAL: This is a critical message!!!
 ```
+
+**Next:** [Workers](/Docs/05-Workers.md)

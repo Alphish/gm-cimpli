@@ -32,11 +32,14 @@ With that in mind, Cimpli library's purpose is twofold:
 The following types are specified and implemented in Cimpli:
 
 - [Events](/Docs/01-Events.md)
-    - an event subject to notify about important occurrences
-    - an event observer to receive and handle these notifications
+    - the **EventSubject** interface to notify about important occurrences, implemented with the **CimpliEventSubject** constructor
+    - the **EventObserver** interface to receive and handle these notifications, implemented with the **CimpliEventObserver** constructor
 - [Commands](/Docs/02-Commands.md)
-    - a command to store execution logic regardless of interaction used to trigger it
+    - the **Command** interface to store execution logic regardless of interaction used to trigger it, implemented with the **CimpliCommand** constructor
 - [Properties](/Docs/03-Properties.md)
-    - a property to keep track of a value and notify about its changes
+    - the **Property** interface to keep track of a value and notify about its changes, implemented with the **CimpliProperty** constructor
 - [Logging](/Docs/04-Logging.md)
-    - a logger to handle incoming messages of varying levels
+    - the **Logger** interface to handle incoming messages of varying levels, implemented with the **CimpliLogger** constructor
+- [Workers](/Docs/05-Workers.md)
+    - the **Task** interface to perform and manage processing spread over multiple steps, implemented with the **CimpliTask** constructor
+    - the **Worker** interface to manage execution of an underlying task, implemented with the **CimpliWorker** constructors
