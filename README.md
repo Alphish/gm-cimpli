@@ -31,6 +31,12 @@ With that in mind, Cimpli library's purpose is twofold:
 
 The following types are specified and implemented in Cimpli:
 
-- [Events](/Docs/01-Events.md) - an event subject to notify about important occurrences and an event observer to receive and handle these notifications
-- [Commands](/Docs/02-Commands.md) - a command to store execution logic regardless of interaction used to trigger it
-- [Properties](/Docs/03-Properties.md) - a property to keep track of a value and notify about its changes
+- [Events](/Docs/01-Events.md)
+    - an event subject to notify about important occurrences
+    - an event observer to receive and handle these notifications
+- [Commands](/Docs/02-Commands.md)
+    - a command to store execution logic regardless of interaction used to trigger it
+- [Properties](/Docs/03-Properties.md)
+    - a property to keep track of a value and notify about its changes
+- [Logging](/Docs/04-Logging.md)
+    - a logger to handle incoming messages of varying levels
