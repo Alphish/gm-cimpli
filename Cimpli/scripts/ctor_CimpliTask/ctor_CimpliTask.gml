@@ -12,10 +12,6 @@ function CimpliTask(_step, _result = undefined, _progress = undefined) construct
     /// @ignore
     progress_retriever = _progress;
     
-    /// @desc The event subject notifying about a task progress.
-    /// @returns {Struct}
-    task_progressed = !is_undefined(progress_retriever) ? new CimpliEventSubject(self) : undefined;
-    
     /// @desc Indicates whether the task has been completed or cancelled.
     /// @returns {Bool}
     is_finished = false;
@@ -27,6 +23,10 @@ function CimpliTask(_step, _result = undefined, _progress = undefined) construct
     /// @desc The result of the task.
     /// @returns {Any}
     result = undefined;
+    
+    /// @desc The event subject notifying about a task progress.
+    /// @returns {Struct}
+    task_progressed = new CimpliEventSubject(self);
     
     /// @desc The event subject notifying about a successful completion.
     /// @returns {Struct}

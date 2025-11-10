@@ -6,8 +6,6 @@ The event system helps different components communicate, having one component de
 
 The event system has a broad range of potential applications: notifying about value or collection changes, reporting long-running tasks progress, sending in-game progress (enemies defeated, coins collected) to the achievements system, organising GameMaker async events into a better tailored system and the like.
 
-Event subject behaviour may vary e.g. by how it handles sending - whether to send requested events immediately or delay processing until they're relevant. Event observer behaviour may vary e.g. by filtering events matching a specific condition and/or handling the event only once and removing itself after handling.
-
 ## Interfaces
 
 The event system uses the following types:
