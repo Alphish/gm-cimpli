@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="Logo.png" alt="CIMPLI Logo">
+</p>
+
 # Cimpli
 
 **Cimpli** - or Common Implementations Library - provides basic implementations of certain recurring types. Other libraries may interact with such types and need simple implementations to use as sensible defaults; **Cimpli** provides such defaults.
