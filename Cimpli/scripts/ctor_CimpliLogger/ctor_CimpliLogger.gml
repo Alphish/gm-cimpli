@@ -15,14 +15,14 @@ function CimpliLogger(_level = undefined) constructor {
     static log_message = function(_level, _message) {
         var _upper_level = string_upper(_level);
         if (filter_level(_upper_level))
-            make_log(_upper_level, _message);
+            write_log(_upper_level, _message);
     }
     
     /// @desc Determines whether the given logging level applies to the given logger.
     /// @arg {String} level     The level to check.
     /// @returns {Bool}
     static filter_level = function(_level) {
-        static severity_values = {
+        static importance_by_level = {
             "TRACE": 0,
             "DEBUG": 10,
             "INFO": 20,
@@ -39,13 +39,13 @@ function CimpliLogger(_level = undefined) constructor {
         else if (is_struct(level))
             return level[$ _level] == true;
         else
-            return (severity_values[$ level] ?? 0) <= (severity_values[$ _level] ?? 0);
+            return (importance_by_level[$ level] ?? 0) <= (importance_by_level[$ _level] ?? 0);
     }
     
     /// @desc Performs the logging operation after confirming the logging level is applicable.
     /// @arg {String} level     The level to log the message with.
     /// @arg {Any} message      The message to log.
-    static make_log = function(_level, _message) {
+    static write_log = function(_level, _message) {
         show_debug_message($"{_level}: {_message}");
     }
     
