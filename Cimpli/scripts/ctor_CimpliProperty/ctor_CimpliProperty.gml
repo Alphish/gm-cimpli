@@ -1,4 +1,4 @@
-/// @desc A simple implementation of the property, with a value getter and setter and value change event subject.
+/// @desc A basic property implementation, with a value getter and setter and value change event subject.
 /// @arg {Any} [initial]        The initial property value.
 function CimpliProperty(_initial = undefined) constructor {
     /// @desc The value of the property.

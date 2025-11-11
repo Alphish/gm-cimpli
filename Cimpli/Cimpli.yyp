@@ -39,6 +39,7 @@
     {"id":{"name":"ctor_CimpliTask","path":"scripts/ctor_CimpliTask/ctor_CimpliTask.yy",},},
     {"id":{"name":"ctor_CimpliWorker","path":"scripts/ctor_CimpliWorker/ctor_CimpliWorker.yy",},},
     {"id":{"name":"ctor_UiLogger","path":"scripts/ctor_UiLogger/ctor_UiLogger.yy",},},
+    {"id":{"name":"feather_Cimpli","path":"scripts/feather_Cimpli/feather_Cimpli.yy",},},
     {"id":{"name":"spr_CimpliLogo","path":"sprites/spr_CimpliLogo/spr_CimpliLogo.yy",},},
     {"id":{"name":"spr_TestButton","path":"sprites/spr_TestButton/spr_TestButton.yy",},},
   ],
