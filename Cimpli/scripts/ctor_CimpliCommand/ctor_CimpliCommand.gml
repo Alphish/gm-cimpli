@@ -1,4 +1,4 @@
-/// @desc A simple implementation of the command, with its execution logic and optional check if execution is possible.
+/// @desc A basic command implementation, with its execution logic and optional check if execution is possible.
 /// @arg {Function} action          A function performed upon execution.
 /// @arg {Function} [condition]     A function returning whether the command can be executed.
 function CimpliCommand(_action, _condition = undefined) constructor {

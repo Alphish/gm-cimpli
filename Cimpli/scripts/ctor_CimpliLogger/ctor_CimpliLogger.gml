@@ -1,4 +1,4 @@
-/// @desc A simple implementation of the logger, with methods to handle logging different kinds of events.
+/// @desc A basic logger implementation, with methods to handle logging different kinds of events.
 /// @arg {String,Array,Struct} [level]      The minimum logging level, or an array or a struct of applicable levels.
 function CimpliLogger(_level = undefined) constructor {
     /// @desc Specifies applicable logging levels.

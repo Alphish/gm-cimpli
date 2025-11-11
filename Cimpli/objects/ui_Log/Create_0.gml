@@ -20,7 +20,7 @@ level_abbreviation = {
     "CRITICAL": "CRT",
 };
 
-max_logs = (room_height - 40) div 20;
+max_logs = (sprite_height - 20) div 20;
 
 add_log = function(_level, _message) {
     array_push(logs, { level: _level, message: _message });
