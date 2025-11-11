@@ -2,7 +2,7 @@ logger = new UiLogger("TRACE");
 log_level_property = new CimpliProperty("TRACE");
 log_level_property.value_changed.add_handler(function(_value) {
     logger = new UiLogger(_value);
-})
+});
 
 // ------------
 // Calculations
@@ -88,7 +88,7 @@ add_observer = function(_subject, _type, _handler) {
 }
 
 can_add_observer = function() {
-    return array_length(all_observers) < 8;
+    return array_length(all_observers) < 10;
 }
 
 observe_start_command = new CimpliCommand(function() {
@@ -121,14 +121,20 @@ observe_count_command = new CimpliCommand(function() {
     });
 }, can_add_observer);
 
+observe_loglevel_command = new CimpliCommand(function() {
+    add_observer(log_level_property.value_changed, "Log Level", function(_level, _sender, _observer) {
+        logger.log_critical($"Log level changed to {_level} (#{_observer.index})");
+    });
+}, can_add_observer);
+
 observe_add_observer_command = new CimpliCommand(function() {
-    add_observer(observer_added, "New Observer", function(_new, _sender, _observer) {
+    add_observer(observer_added, "Observe", function(_new, _sender, _observer) {
         logger.log_success($"Added {_new.type} observer #{_new.index} (#{_observer.index})");
     });
 }, can_add_observer);
 
 observe_remove_observer_command = new CimpliCommand(function() {
-    add_observer(observer_removed, "Remove Observer", function(_deleted, _sender, _observer) {
+    add_observer(observer_removed, "Unobserve", function(_deleted, _sender, _observer) {
         logger.log_warning($"Removed {_deleted.type} observer #{_deleted.index} (#{_observer.index})");
     });
 }, can_add_observer);
@@ -138,8 +144,16 @@ clear_observers_command = new CimpliCommand(function() {
     calculation_progressed.clear_observers();
     calculation_completed.clear_observers();
     calculation_cancelled.clear_observers();
+    
+    calculation_arg_property.value_changed.clear_observers();
+    log_level_property.value_changed.clear_observers();
+    log_level_property.value_changed.add_handler(function(_value) {
+        logger = new UiLogger(_value);
+    });
+    
     observer_added.clear_observers();
     observer_removed.clear_observers();
+    
     array_resize(all_observers, 0);
     rebuild_buttons();
 }, function() {
@@ -153,18 +167,41 @@ remove_observer_command = new CimpliCommand(function(_observer) {
 });
 
 rebuild_buttons = function() {
-    with (ui_TestButton) {
+    with (ui_ActionButton) {
         if (command == other.remove_observer_command)
             instance_destroy();
     }
     
     array_foreach(all_observers, function(_observer, _index) {
-        instance_create_layer(280, 40 + 40 * _index, layer, ui_TestButton, {
+        instance_create_layer(220, 300 + 40 * _index, layer, ui_ActionButton, {
             text: $"Unobs. {_observer.type} #{_observer.index}",
             command: remove_observer_command,
             command_parameter: _observer,
-            image_xscale: 14,
-            image_yscale: 2,
+            image_xscale: 10 / 3,
+            image_yscale: 2 / 3,
+            base_color: merge_color(c_yellow, c_white, 0.5),
+            hover_color: c_yellow,
         });
     });
 }
+
+// -------------
+// Miscellaneous
+// -------------
+
+view_instructions_command = new CimpliCommand(function() {
+    layer_set_visible("Instructions", true);
+});
+
+visit_website_command = new CimpliCommand(function() {
+    url_open("https://github.com/Alphish/gm-cimpli");
+});
+
+// -------
+// Startup
+// -------
+
+observe_start_command.execute();
+observe_progress_command.execute();
+observe_completion_command.execute();
+observe_cancellation_command.execute();

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"feather_Cimpli",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"feather_Cimpli",
+  "parent":{
+    "name":"Cimpli",
+    "path":"folders/_Packages/Alphish/Cimpli.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

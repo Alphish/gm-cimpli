@@ -4,13 +4,15 @@
 
 # Cimpli
 
-**Cimpli** - or Common Implementations Library - provides basic implementations of certain recurring types. Other libraries may interact with such types and need simple implementations to use as sensible defaults; **Cimpli** provides such defaults.
+**CIMPLI** - or Common Implementations Library - provides basic implementations of certain recurring types. Other libraries may interact with such types and need simple implementations to use as sensible defaults; **CIMPLI** provides such defaults. Check the "Cimpli types" section below to see documentation of interfaces and their implementations.
+
+A web demo is also available on itch.io: https://alphish-creature.itch.io/gm-cimpli
 
 ## Installation
 
 The Cimpli package has been developed on **GameMaker 2024.14**. It may not work correctly on older versions.
 
-1. Download the Local Package YYMPS file: ...
+1. Download the Local Package YYMPS file: [CIMPLI.GMS2.1.0.0.yymps](https://github.com/Alphish/gm-launchbox/releases/download/GMS2.1.0.0/CIMPLI.GMS2.1.0.0.yymps)
 2. Follow the [GameMaker manual instructions](https://manual.gamemaker.io/monthly/en/#t=IDE_Tools%2FLocal_Asset_Packages.htm) to import the package; import all the assets.
 3. The Cimpli implementations should be ready to use!
 

@@ -30,7 +30,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"bg_Console",
+    "path":"sprites/bg_Console/bg_Console.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

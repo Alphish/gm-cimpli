@@ -1,4 +1,4 @@
-/// @desc A simple implementation of the event subject, managing its observers and sending events to them.
+/// @desc A basic event subject implementation, managing its observers and sending events to them.
 /// @arg {Any} [sender]         The entity passed as the event sender.
 function CimpliEventSubject(_sender = undefined) constructor {
     /// @ignore

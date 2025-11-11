@@ -1,4 +1,4 @@
-/// @desc A simple implementation of the event observer, receiving and handling events from the subject.
+/// @desc A basic event observer implementation, receiving and handling events from the subject.
 /// @arg {Struct} subject           The subject sending events.
 /// @arg {Function} handler         The function handling incoming events.
 function CimpliEventObserver(_subject, _handler) constructor {
