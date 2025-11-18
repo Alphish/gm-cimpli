@@ -21,10 +21,8 @@ calculation_completed = new CimpliEventSubject(id);
 calculation_cancelled = new CimpliEventSubject(id);
 
 begin_calculation_command = new CimpliCommand(function() {
-    if (!is_undefined(worker) && worker.is_busy()) {
-        worker.cancel();
-        worker = undefined;
-    }
+    if (!is_undefined(worker))
+        worker.try_cancel();
     
     var _number = calculation_arg_property.get_value();
     if (is_undefined(_number)) {
