@@ -10,22 +10,39 @@ The worker system helps manage long-running tasks so they can be executed over m
 
 The worker system uses the following types:
 
-- **Task** interface, exposing methods for task processing and management, as well as event subjects notifying about task changes
+- **TaskProcessor** interface, exposing methods for processing task logic and progress tracking
+- **Task** interface, exposing methods for managing task processing, as well as event subjects notifying about task changes
 - **Worker** interface, exposing methods for processing the underlying task
+
+---
+
+The **TaskProcessor** interface requires the following members:
+
+- `status: Any` - the status of the task processing
+- `result: Any` - the result of successful task completion
+- `error: Any` - the error causing the task failure
+- `process_step() -> Bool` - a method performing a single processing step, returning whether more steps are needed
+- `get_progress() -> Any` - a method returning the processing progress so far
+- `is_finished() -> Bool` - a method returning whether the processing has finished with completion or error
+
+Because Feather doesn't recognise interface types, the task type is specified in JSDoc as `Struct`
 
 ---
 
 The **Task** interface requires the following members:
 
+- `is_finished: Bool` - a variable indicating whether the task has been finished by completion or cancellation
+- `is_cancelled: Bool` - a variable indicating whether the task has been cancelled
+- `get_result(): Any` - a method returning the processing result, if any
+- `get_error(): Any` - a method returning the processing error, if any
 - `process() -> Bool` - a method performing a single processing step, returning whether more steps are needed
-- `update_progress() -> Undefined` - a method sending a progress update
-- `try_complete() -> Bool` - a method attempting to complete the task and resolve the result; it returns whether completion succeeded
+- `check_updates() -> Undefined` - a method checking for task processing updates and sending relevant events
 - `try_cancel() -> Bool` - a method attempting to cancel the task before the result is resolved; it returns whether cancellation succeeded
-- `is_finished: Bool` - a variable indicating whether the task was finished by completion or cancellation
-- `is_completed: Bool` - a variable indicating whether the task was successfully completed
-- `result: Any` - the result produced by the completed task
+- `status_changed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about task status change, sending the status value
 - `task_progressed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about progress, sending a progress object
-- `task_completed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about completion, sending the task result
+- `task_finished: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about processing finishing with completion or failure, sending the processor with its result and error
+- `task_completed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about successful completion, sending the task result
+- `task_failed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about failure, sending the task error
 - `task_cancelled: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about cancellation
 
 Because Feather doesn't recognise interface types, the task type is specified in JSDoc as `Struct`
@@ -44,27 +61,45 @@ Because Feather doesn't recognise interface types, the worker type is specified 
 
 ## Implementation
 
-In Cimpli library, the task and the worker are implemented with **CimpliTask** constructor and **CimpliWorker**, respectively.
+In Cimpli library, the task manager and the worker are implemented with **CimpliTask** and **CimpliWorker** constructors, respectively. On top of that, there's a **CimpliTaskProcessor** constructor that isn't a complete task processor implementation on its own, but serves as a base for specific implementations.
+
+---
+
+**CimpliTaskProcessor** is a base for specific task processor implementations. Its constructor has no arguments. It stubs/implements the **TaskProcessor** interface in the following way:
+
+- `status` - set to **false** when the task is not finished, set to **true** otherwise
+- `result` - retrieves the result of the successful completion, if any
+- `error` - retrieves the cause of the failed processing, if any
+- `process_step` - **must be implemented in the constructor derived from CimpliTaskProcessor** or otherwise set in CimpliTaskProcessor instance; otherwise, a "not implemented" exception will be thrown
+- `get_progress` - returns **undefined**, indicating no progress; the implementation may be replaced in the derived constructor
+- `is_finished` - returns whether the **status** is truthy or falsy; the implementation may be replaced in the derived constructor (e.g. to check named statuses)
+
+Additionally, CimpliTaskProcessor exposes the following utility methods that can be returned from the processing step:
+
+- `finish() -> Bool` - sets the status to true and returns true (indicating completed processing)
+- `complete_with(result) -> Bool` - sets the result to the given value, the status to true and returns true (indicating completed processing)
+- `fail_with(error) -> Bool` - sets the error to the given value, the status to true and returns true (indicating completed processing)
 
 ---
 
 **CimpliTask** is a basic task implementation, with its behaviour customised with functions. Its constructor has the following arguments:
 
-- `step: Function` - a parameterless function performing a processing step and returning whether more processing is needed
-- `[result]: Function` - a parameterless function returning the result upon the task completion; if no such function is given, the sent result is undefined
-- `[progress]: Function` - a parameterless function returning the current task progress; if  no such function is given, no progress notifications are sent
+- `processor: TaskProcessor` - the underlying task logic processor
 
 CimpliTask implements the **Task** interface in the following way:
 
-- `process` - performs and returns the result of step processing function
-- `update_progress` - if progress function was given, sends a task progress notification with the current progress object
-- `try_complete` - if task wasn't already finished, marks it as finished and completed, resolves the result and sends the task completion notification with this result
-- `try_cancel` - if task wasn't already finished, marks it as finished but not completed and sends the task cancellation notification
 - `is_finished` - initially false, set to true upon completion or cancellation
-- `is_completed` - initially false, set to true only upon successful completion
-- `result` - initially undefined, resolved to an arbitrary object upon completion
+- `is_cancelled` - initially false, set to true only upon cancellation
+- `get_result` - relays the result of the underlying processor
+- `get_error` - relays the error of the underlying processor
+- `process` - performs the underlying processing step
+- `check_updates` - checks the task changes and notifies about status update, progress update and task finishing
+- `try_cancel` - if task wasn't already finished, marks it as finished and cancelled and sends the task cancellation notification
+- `status_changes` - automatically created as an instance of CimpliEventSubject
 - `task_progressed` - automatically created as an instance of CimpliEventSubject
+- `task_finished` - automatically created as an instance of CimpliEventSubject
 - `task_completed` - automatically created as an instance of CimpliEventSubject
+- `task_failed` - automatically created as an instance of CimpliEventSubject
 - `task_cancelled` - automatically created as an instance of CimpliEventSubject
 
 ---
@@ -79,34 +114,34 @@ CimpliWorker implements the **Worker** interface in the following way:
 - `run_step` - performs a single task processing step, then sends the progress update; if no more processing steps are needed, attempts the task completion
 - `run_until` - performs processing steps until reaching the time limit, then sends the progress update; if no more processing steps are needed, attempts the task completion
 - `run_to_end` - performs task processing steps until it's indicated no more steps are needed, then sends the progress update and attempts the task completion
+- `try_cancel` - attempts to cancel the underlying task
 
 ## Example
 
 The following example demonstrates using the worker system for procedural generation.
 
-The `DungeonGenerator` constructor:
+The `DungeonGeneratorProcessor` constructor:
 
 ```gml
-function DungeonGenerator(_config) constructor {
+function DungeonGeneratorProcessor(_config) : CimpliTaskProcessor() constructor {
     remaining_rooms = _config.rooms;
     total_rooms = array_length(remaining_rooms);
     dungeon = {};
     
-    generate_room = function() {
+    process_step = function() {
         var _room = array_pop(remaining_rooms);
         // perform generator logic on the room
         
         // returns whether all rooms were processed
-        return array_length(remaining_rooms) == 0;
+        if (array_length(remaining_rooms) == 0)
+            return complete_with(dungeon);
+        else
+            return false;
     }
     
     get_progress = function() {
         var _processed_rooms = total_rooms - array_length(remaining_rooms);
         return { processed: _processed_rooms, total: total_rooms };
-    }
-    
-    get_dungeon = function() {
-        return dungeon;
     }
 }
 
@@ -115,14 +150,10 @@ function DungeonGenerator(_config) constructor {
 **Create** event of the `ctrl_DungeonGenerator` object, with a `config` object variable:
 
 ```gml
-generator = new DungeonGenerator(config);
+generator = new DungeonGeneratorProcessor(config);
 progress_percent = 0;
 
-task = new CimpliTask(
-    /* step */ generator.generate_room,
-    /* result */ generator.get_dungeon,
-    /* progress */ generator.get_progress
-    );
+task = new CimpliTask(generator);
 
 task.task_progressed.add_handler(function(_progress) {
     progress_percent = round(100 * _progress.processed / _progress.total);

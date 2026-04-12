@@ -20,7 +20,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.14.0.207",
+    "IDEVersion":"2024.14.4.222",
   },
   "name":"Cimpli",
   "resources":[
@@ -34,10 +34,13 @@
     {"id":{"name":"ctor_CimpliCommand","path":"scripts/ctor_CimpliCommand/ctor_CimpliCommand.yy",},},
     {"id":{"name":"ctor_CimpliEventObserver","path":"scripts/ctor_CimpliEventObserver/ctor_CimpliEventObserver.yy",},},
     {"id":{"name":"ctor_CimpliEventSubject","path":"scripts/ctor_CimpliEventSubject/ctor_CimpliEventSubject.yy",},},
+    {"id":{"name":"ctor_CimpliException","path":"scripts/ctor_CimpliException/ctor_CimpliException.yy",},},
     {"id":{"name":"ctor_CimpliLogger","path":"scripts/ctor_CimpliLogger/ctor_CimpliLogger.yy",},},
     {"id":{"name":"ctor_CimpliProperty","path":"scripts/ctor_CimpliProperty/ctor_CimpliProperty.yy",},},
     {"id":{"name":"ctor_CimpliTask","path":"scripts/ctor_CimpliTask/ctor_CimpliTask.yy",},},
+    {"id":{"name":"ctor_CimpliTaskProcessor","path":"scripts/ctor_CimpliTaskProcessor/ctor_CimpliTaskProcessor.yy",},},
     {"id":{"name":"ctor_CimpliWorker","path":"scripts/ctor_CimpliWorker/ctor_CimpliWorker.yy",},},
+    {"id":{"name":"ctor_CountUpProcessor","path":"scripts/ctor_CountUpProcessor/ctor_CountUpProcessor.yy",},},
     {"id":{"name":"ctor_UiLogger","path":"scripts/ctor_UiLogger/ctor_UiLogger.yy",},},
     {"id":{"name":"feather_Cimpli","path":"scripts/feather_Cimpli/feather_Cimpli.yy",},},
     {"id":{"name":"bg_Console","path":"sprites/bg_Console/bg_Console.yy",},},
