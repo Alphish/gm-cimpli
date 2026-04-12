@@ -8,10 +8,6 @@ log_level_property.value_changed.add_handler(function(_value) {
 // Calculations
 // ------------
 
-calculated_sum = 0;
-remaining_terms = [];
-terms_count = 0;
-
 calculation_arg_property = new CimpliProperty();
 
 worker = undefined;
@@ -30,15 +26,11 @@ begin_calculation_command = new CimpliCommand(function() {
         return;
     }
     
-    calculated_sum = 0;
-    remaining_terms = array_create_ext(_number, function(i) { return i + 1; });
-    terms_count = _number;
-    
-    var _task = new CimpliTask(calculate_next_term, get_calculated_sum, get_calculation_progress);
+    var _processor = new CountUpProcessor(_number);
+    var _task = new CimpliTask(_processor);
     _task.task_progressed.add_handler(method(calculation_progressed, calculation_progressed.send));
     _task.task_completed.add_handler(method(calculation_completed, calculation_completed.send));
     _task.task_cancelled.add_handler(method(calculation_cancelled, calculation_cancelled.send));
-    
     worker = new CimpliWorker(_task);
     
     calculation_started.send(_number);
@@ -50,19 +42,6 @@ cancel_calculation_command = new CimpliCommand(function() {
 }, function() {
     return !is_undefined(worker) && worker.is_busy();
 });
-
-calculate_next_term = function() {
-    calculated_sum += array_shift(remaining_terms);
-    return array_length(remaining_terms) <= 0;
-}
-
-get_calculated_sum = function() {
-    return calculated_sum;
-}
-
-get_calculation_progress = function() {
-    return $"{terms_count - array_length(remaining_terms)}/{terms_count}";
-}
 
 // ---------
 // Observers
