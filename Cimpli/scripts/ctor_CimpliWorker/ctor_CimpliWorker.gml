@@ -18,13 +18,11 @@ function CimpliWorker(_task) constructor {
             return true;
         
         var _step_result = task.process();
-        
-        task.update_progress();
-        if (_step_result)
-            return task.try_complete();
+        task.check_updates();
+        return _step_result;
     }
     
-    /// @desc Executes the underlying task until given time and updates it. Returns whether the task requires no further processing.
+    /// @desc Executes the underlying task until given time and checks for progress and status updates afterwards. Returns whether the task requires no further processing.
     /// @arg {Real} limit       The time limit after which processing should stop.
     /// @arg {Real} [steps]     A number of steps to perform regardless of time limit.
     /// @returns {Bool}
@@ -43,9 +41,8 @@ function CimpliWorker(_task) constructor {
             _step_result = task.process();
         }
         
-        task.update_progress();
-        if (_step_result)
-            return task.try_complete();
+        task.check_updates();
+        return _step_result;
     }
     
     /// @desc Executes the underlying task until completion or interruption.
@@ -59,8 +56,8 @@ function CimpliWorker(_task) constructor {
             _step_result = step();
         }
         
-        task.update_progress();
-        return task.try_complete();
+        task.check_updates();
+        return _step_result;
     }
     
     /// @desc Attempts to cancel the underlying task and returns whether it was successful.
