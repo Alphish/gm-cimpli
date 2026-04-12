@@ -12,7 +12,7 @@ A web demo is also available on itch.io: https://alphish-creature.itch.io/gm-cim
 
 The Cimpli package has been developed on **GameMaker 2024.14**. It may not work correctly on older versions.
 
-1. Download the Local Package YYMPS file: [CIMPLI.GMS2.1.0.0.yymps](https://github.com/Alphish/gm-cimpli/releases/download/GMS2.1.0.0/CIMPLI.GMS2.1.0.0.yymps)
+1. Download the Local Package YYMPS file: [CIMPLI.GMS2.1.1.0.yymps](https://github.com/Alphish/gm-cimpli/releases/download/GMS2.1.1.0/CIMPLI.GMS2.1.1.0.yymps)
 2. Follow the [GameMaker manual instructions](https://manual.gamemaker.io/monthly/en/#t=IDE_Tools%2FLocal_Asset_Packages.htm) to import the package; import all the assets.
 3. The Cimpli implementations should be ready to use!
 
@@ -47,5 +47,6 @@ The following types are specified and implemented in Cimpli:
 - [Logging](/Docs/04-Logging.md)
     - the **Logger** interface to handle incoming messages of varying levels, implemented with the **CimpliLogger** constructor
 - [Workers](/Docs/05-Workers.md)
-    - the **Task** interface to perform and manage processing spread over multiple steps, implemented with the **CimpliTask** constructor
+    - the **TaskProcessor** interface to specify processing logic to be performed over multiple steps, with **CimpliTaskProcessor** constructor serving as a base for concrete implementations
+    - the **Task** interface to perform and manage processing, implemented with the **CimpliTask** constructor
     - the **Worker** interface to manage execution of an underlying task, implemented with the **CimpliWorker** constructors
