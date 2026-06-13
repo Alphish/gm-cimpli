@@ -52,4 +52,10 @@ function CimpliTaskProcessor() constructor {
     static is_finished = function() {
         return bool(status);
     }
+    
+    /// @desc Cleans up the task resources, if any.
+    /// @arg {Bool} auto        Indicates if the cleanup was called manually (false) or from the general task management system (true).
+    static cleanup = function(_auto = false) {
+        // nothing by default
+    }
 }

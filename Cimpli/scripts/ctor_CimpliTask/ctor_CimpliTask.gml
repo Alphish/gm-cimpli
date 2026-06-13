@@ -78,6 +78,8 @@ function CimpliTask(_processor) constructor {
                 task_completed.send(processor.result);
             else
                 task_failed.send(processor.error);
+            
+            processor.cleanup(/* auto */ true);
         }
     }
     
@@ -90,6 +92,8 @@ function CimpliTask(_processor) constructor {
         is_finished = true;
         is_cancelled = true;
         task_cancelled.send();
+        
+        processor.cleanup(/* auto */ true);
         return true;
     }
 }
