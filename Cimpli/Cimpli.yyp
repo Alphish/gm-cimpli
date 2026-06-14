@@ -37,6 +37,8 @@
     {"id":{"name":"ctor_CimpliException","path":"scripts/ctor_CimpliException/ctor_CimpliException.yy",},},
     {"id":{"name":"ctor_CimpliLogger","path":"scripts/ctor_CimpliLogger/ctor_CimpliLogger.yy",},},
     {"id":{"name":"ctor_CimpliProperty","path":"scripts/ctor_CimpliProperty/ctor_CimpliProperty.yy",},},
+    {"id":{"name":"ctor_CimpliProvider","path":"scripts/ctor_CimpliProvider/ctor_CimpliProvider.yy",},},
+    {"id":{"name":"ctor_CimpliProviderResolver","path":"scripts/ctor_CimpliProviderResolver/ctor_CimpliProviderResolver.yy",},},
     {"id":{"name":"ctor_CimpliTask","path":"scripts/ctor_CimpliTask/ctor_CimpliTask.yy",},},
     {"id":{"name":"ctor_CimpliTaskProcessor","path":"scripts/ctor_CimpliTaskProcessor/ctor_CimpliTaskProcessor.yy",},},
     {"id":{"name":"ctor_CimpliWorker","path":"scripts/ctor_CimpliWorker/ctor_CimpliWorker.yy",},},
