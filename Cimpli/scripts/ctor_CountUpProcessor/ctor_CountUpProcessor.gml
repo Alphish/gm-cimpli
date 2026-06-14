@@ -14,4 +14,10 @@ function CountUpProcessor(_terms) : CimpliTaskProcessor() constructor {
     static get_progress = function() {
         return $"{terms_count - array_length(remaining_terms)}/{terms_count}";
     }
+    
+    static cleanup = function(_auto) {
+        // it may or may not tell the garbage collector to grab it faster
+        delete remaining_terms;
+        ctrl_CimpliDemo.logger.log_debug($"Counter task cleanup completed. AUTO={_auto}");
+    }
 }
