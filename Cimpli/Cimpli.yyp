@@ -31,10 +31,14 @@
     {"id":{"name":"fnt_Log","path":"fonts/fnt_Log/fnt_Log.yy",},},
     {"id":{"name":"fnt_Title","path":"fonts/fnt_Title/fnt_Title.yy",},},
     {"id":{"name":"ctrl_CounterObserver","path":"objects/ctrl_CounterObserver/ctrl_CounterObserver.yy",},},
+    {"id":{"name":"ctrl_ShapeMaker","path":"objects/ctrl_ShapeMaker/ctrl_ShapeMaker.yy",},},
+    {"id":{"name":"obj_ExampleShape","path":"objects/obj_ExampleShape/obj_ExampleShape.yy",},},
+    {"id":{"name":"obj_ShapePanel","path":"objects/obj_ShapePanel/obj_ShapePanel.yy",},},
     {"id":{"name":"ui_ActionButton","path":"objects/ui_ActionButton/ui_ActionButton.yy",},},
     {"id":{"name":"ui_Log","path":"objects/ui_Log/ui_Log.yy",},},
     {"id":{"name":"ui_SelectButton","path":"objects/ui_SelectButton/ui_SelectButton.yy",},},
     {"id":{"name":"demo_CounterObserver","path":"rooms/demo_CounterObserver/demo_CounterObserver.yy",},},
+    {"id":{"name":"demo_ShapeMaker","path":"rooms/demo_ShapeMaker/demo_ShapeMaker.yy",},},
     {"id":{"name":"ctor_CimpliCommand","path":"scripts/ctor_CimpliCommand/ctor_CimpliCommand.yy",},},
     {"id":{"name":"ctor_CimpliEventObserver","path":"scripts/ctor_CimpliEventObserver/ctor_CimpliEventObserver.yy",},},
     {"id":{"name":"ctor_CimpliEventSubject","path":"scripts/ctor_CimpliEventSubject/ctor_CimpliEventSubject.yy",},},
@@ -64,6 +68,7 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"demo_CounterObserver","path":"rooms/demo_CounterObserver/demo_CounterObserver.yy",},},
+    {"roomId":{"name":"demo_ShapeMaker","path":"rooms/demo_ShapeMaker/demo_ShapeMaker.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
