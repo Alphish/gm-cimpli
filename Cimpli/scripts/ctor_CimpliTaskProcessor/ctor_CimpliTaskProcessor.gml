@@ -12,6 +12,11 @@ function CimpliTaskProcessor() constructor {
     /// @returns {Any}
     error = undefined;
     
+    /// @desc Prepares the task resources, if any.
+    static init = function() {
+        // nothing by default
+    }
+    
     /// @desc Performs a single step of the task processing logic.
     /// @returns {Bool}
     static process_step = function() {

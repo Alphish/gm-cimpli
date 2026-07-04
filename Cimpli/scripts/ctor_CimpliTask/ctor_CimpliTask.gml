@@ -20,6 +20,10 @@ function CimpliTask(_processor) constructor {
     /// @returns {Struct}
     status_changed = new CimpliEventSubject(self);
     
+    /// @desc The event subject notifying about the task starting.
+    /// @returns {Struct}
+    task_started = new CimpliEventSubject(self);
+    
     /// @desc The event subject notifying about the task progress.
     /// @returns {Struct}
     task_progressed = new CimpliEventSubject(self);
@@ -50,6 +54,12 @@ function CimpliTask(_processor) constructor {
     /// @returns {Any}
     static get_error = function() {
         return processor.error;
+    }
+    
+    /// @desc Prepares the task resources, if any.
+    init = function() {
+        processor.init();
+        task_started.send(processor);
     }
     
     /// @desc Performs a single processing step and returns whether the processing should stop.
