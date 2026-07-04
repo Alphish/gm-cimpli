@@ -1,7 +1,11 @@
 function CountUpProcessor(_terms) : CimpliTaskProcessor() constructor {
     terms_count = _terms;
     calculated_sum = 0;
-    remaining_terms = array_create_ext(_terms, function(i) { return i + 1; });
+    remaining_terms = undefined;
+    
+    static init = function() {
+        remaining_terms = array_create_ext(terms_count, function(i) { return i + 1; });
+    }
     
     static process_step = function() {
         calculated_sum += array_shift(remaining_terms);
