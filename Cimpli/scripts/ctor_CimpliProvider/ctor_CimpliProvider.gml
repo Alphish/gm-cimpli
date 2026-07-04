@@ -104,34 +104,35 @@ function CimpliProvider(_ignorecase = false) constructor {
     // Providing
     // ---------
     
-    /// @desc Checks if a value can be resolved and provided for a given specifier.
+    /// @desc Checks if a value can be resolved and provided for a given specifier and arguments.
     /// @arg {Any} specifier        The specifier to check.
+    /// @arg {Any} [args]           Additional arguments to resolve the value with.
     /// @returns {Bool}
-    static can_provide = function(_specifier) {
+    static can_provide = function(_specifier, _args = undefined) {
         var _key = resolve_key(_specifier);
         return struct_exists(resolvers, _key);
     }
     
     /// @desc Attempts to resolve a value with a given specifier and optional arguments. If the value cannot be resolved, the undefined value is returned.
     /// @arg {Any} specifier        The specifier to resolve the value of.
-    /// @arg {Any} [arg]            An optional argument to modify the way the value is resolved.
+    /// @arg {Any} [args]           Additional arguments to resolve the value with.
     /// @returns {Any}
-    static try_provide = function(_specifier, _arg = undefined) {
+    static try_provide = function(_specifier, _args = undefined) {
         var _key = resolve_key(_specifier);
         var _resolver = resolvers[$ _key];
-        return !is_undefined(_resolver) ? _resolver.resolve(self, _arg, _specifier, _key) : undefined;
+        return !is_undefined(_resolver) ? _resolver.resolve(_args, self, _specifier, _key) : undefined;
     }
     
     /// @desc Attempts to resolve a value with a given specifier and optional arguments. If the value cannot be resolved, an error is thrown.
     /// @arg {Any} specifier        The specifier to resolve the value of.
-    /// @arg {Any} [arg]            An optional argument to modify the way the value is resolved.
+    /// @arg {Any} [args]           Additional arguments to resolve the value with.
     /// @returns {Any}
-    static provide = function(_specifier, _arg = undefined) {
+    static provide = function(_specifier, _args = undefined) {
         var _key = resolve_key(_specifier);
         if (!struct_exists(resolvers, _key))
             throw CimpliException.unknown_key("The provider", _key);
         
         var _entry = resolvers[$ _key];
-        return _entry.resolve(self, _arg, _specifier, _key);
+        return _entry.resolve(_args, self, _specifier, _key);
     }
 }

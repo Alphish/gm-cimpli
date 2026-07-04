@@ -11,11 +11,12 @@ function CimpliProviderResolver(_source, _constant = undefined) constructor {
     is_constant = _constant ?? !is_method(source);
     
     /// @desc Resolves the value to provide.
-    /// @arg {Struct} provider      The provider for resolving additional values.
     /// @arg {Any} args             Additional arguments to resolve the value with.
+    /// @arg {Struct} provider      The provider for resolving additional dependencies.
     /// @arg {Any} specifier        The specifier used to request the value.
     /// @arg {Any} key              The key used to find the entry.
-    static resolve = function(_provider, _args, _specifier, _key) {
-        return is_constant ? source : source(_provider, _args, _specifier, _key);
+    /// @returns {Any}
+    static resolve = function(_args, _provider, _specifier, _key) {
+        return is_constant ? source : source(_args, _provider, _specifier, _key);
     }
 }

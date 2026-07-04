@@ -4,17 +4,17 @@ shape_color_property = new CimpliProperty(c_red);
 
 shape_provider = new CimpliProvider();
 
-shape_provider.add_generator(spr_ShapeRound, function(_provider, _args) {
+shape_provider.add_generator(spr_ShapeRound, function(_args) {
     var _instargs = { sprite_index: spr_ShapeRound, image_xscale: _args.size, image_yscale: _args.size, image_blend: _args.color };
     return instance_create_layer(0, 0, "Shapes", obj_ExampleShape, _instargs);
     });
 
-shape_provider.add_generator(spr_ShapeSquare, function(_provider, _args) {
+shape_provider.add_generator(spr_ShapeSquare, function(_args) {
     var _instargs = { sprite_index: spr_ShapeSquare, image_xscale: _args.size, image_yscale: _args.size, image_blend: _args.color, image_angle: random(360) };
     return instance_create_layer(0, 0, "Shapes", obj_ExampleShape, _instargs);
     });
 
-shape_provider.add_generator(spr_ShapeTriangle, function(_provider, _args) {
+shape_provider.add_generator(spr_ShapeTriangle, function(_args) {
     var _instargs = { sprite_index: spr_ShapeTriangle, image_xscale: _args.size, image_yscale: _args.size, image_blend: _args.color, image_angle: random(360) };
     return instance_create_layer(0, 0, "Shapes", obj_ExampleShape, _instargs);
     });
