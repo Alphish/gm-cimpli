@@ -14,6 +14,7 @@
     {"$GMFolder":"","%Name":"Alphish","folderPath":"folders/_Packages/Alphish.yy","name":"Alphish","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Cimpli","folderPath":"folders/_Packages/Alphish/Cimpli.yy","name":"Cimpli","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Demo","folderPath":"folders/Demo.yy","name":"Demo","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Common","folderPath":"folders/Demo/Common.yy","name":"Common","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
   "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[],
@@ -24,6 +25,7 @@
   },
   "name":"Cimpli",
   "resources":[
+    {"id":{"name":"fnt_Info","path":"fonts/fnt_Info/fnt_Info.yy",},},
     {"id":{"name":"fnt_Log","path":"fonts/fnt_Log/fnt_Log.yy",},},
     {"id":{"name":"fnt_Title","path":"fonts/fnt_Title/fnt_Title.yy",},},
     {"id":{"name":"ctrl_CimpliDemo","path":"objects/ctrl_CimpliDemo/ctrl_CimpliDemo.yy",},},
