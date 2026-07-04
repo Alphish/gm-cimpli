@@ -1,16 +1,16 @@
 {
   "$GMObject":"",
-  "%Name":"ctrl_CimpliDemo",
+  "%Name":"ctrl_CounterObserver",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"ctrl_CimpliDemo",
+  "name":"ctrl_CounterObserver",
   "overriddenProperties":[],
   "parent":{
-    "name":"Demo",
-    "path":"folders/Demo.yy",
+    "name":"CounterObserver",
+    "path":"folders/Demo/CounterObserver.yy",
   },
   "parentObjectId":null,
   "persistent":false,

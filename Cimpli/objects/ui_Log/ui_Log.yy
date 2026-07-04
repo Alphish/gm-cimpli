@@ -9,8 +9,8 @@
   "name":"ui_Log",
   "overriddenProperties":[],
   "parent":{
-    "name":"Demo",
-    "path":"folders/Demo.yy",
+    "name":"CounterObserver",
+    "path":"folders/Demo/CounterObserver.yy",
   },
   "parentObjectId":null,
   "persistent":false,
