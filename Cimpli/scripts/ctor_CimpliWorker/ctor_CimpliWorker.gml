@@ -5,6 +5,9 @@ function CimpliWorker(_task) constructor {
     /// @returns {Struct}
     task = _task;
     
+    // since Cimpli worker processes only a single task, initialise the task immediately
+    task.init();
+    
     /// @desc Checks if the worker has an ongoing task.
     /// @returns {Bool}
     static is_busy = function() {
