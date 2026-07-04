@@ -10,9 +10,9 @@ A web demo is also available on itch.io: https://alphish-creature.itch.io/gm-cim
 
 ## Installation
 
-The Cimpli package has been developed on **GameMaker 2024.14**. It may not work correctly on older versions.
+The latest Cimpli package version has been developed on **GameMaker 2026.0 LTS**. It may not work correctly on older GM versions.
 
-1. Download the Local Package YYMPS file: [CIMPLI.GMS2.1.1.0.yymps](https://github.com/Alphish/gm-cimpli/releases/download/GMS2.1.1.0/CIMPLI.GMS2.1.1.0.yymps)
+1. Download the Local Package YYMPS file: [CIMPLI.GMS2.1.2.0.yymps](https://github.com/Alphish/gm-cimpli/releases/download/GMS2.1.2.0/CIMPLI.GMS2.1.2.0.yymps)
 2. Follow the [GameMaker manual instructions](https://manual.gamemaker.io/monthly/en/#t=IDE_Tools%2FLocal_Asset_Packages.htm) to import the package; import all the assets.
 3. The Cimpli implementations should be ready to use!
 
@@ -47,6 +47,9 @@ The following types are specified and implemented in Cimpli:
 - [Logging](/Docs/04-Logging.md)
     - the **Logger** interface to handle incoming messages of varying levels, implemented with the **CimpliLogger** constructor
 - [Workers](/Docs/05-Workers.md)
-    - the **TaskProcessor** interface to specify processing logic to be performed over multiple steps, with **CimpliTaskProcessor** constructor serving as a base for concrete implementations
+    - the **TaskProcessor** interface to specify processing logic to be performed over multiple steps, with the **CimpliTaskProcessor** constructor serving as a base for concrete implementations
     - the **Task** interface to perform and manage processing, implemented with the **CimpliTask** constructor
     - the **Worker** interface to manage execution of an underlying task, implemented with the **CimpliWorker** constructors
+- [Providers](/Docs/06-Providers.md)
+    - the **ProviderResolver** interface to resolve the requested value, implemented with the **CimpliProviderResolver** constructor
+    - the **Provider** interface to resolve requested value based on a given specifier and arguments, implemented with the **CimpliProvider** constructor
