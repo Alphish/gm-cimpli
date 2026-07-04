@@ -21,6 +21,7 @@ The **TaskProcessor** interface requires the following members:
 - `status: Any` - the status of the task processing
 - `result: Any` - the result of successful task completion
 - `error: Any` - the error causing the task failure
+- `init() -> Undefined` - a method reserving whatever resources are required by the task; by putting resource reservation in this method as opposed to the constructor, one may create many tasks in advance while only having resources reserved for ongoing ones
 - `process_step() -> Bool` - a method performing a single processing step, returning whether more steps are needed
 - `get_progress() -> Any` - a method returning the processing progress so far
 - `is_finished() -> Bool` - a method returning whether the processing has finished with completion or error
@@ -34,12 +35,14 @@ The **Task** interface requires the following members:
 
 - `is_finished: Bool` - a variable indicating whether the task has been finished by completion or cancellation
 - `is_cancelled: Bool` - a variable indicating whether the task has been cancelled
-- `get_result(): Any` - a method returning the processing result, if any
-- `get_error(): Any` - a method returning the processing error, if any
+- `get_result() -> Any` - a method returning the processing result, if any
+- `get_error() -> Any` - a method returning the processing error, if any
+- `init() -> Undefined` - a method initialising the underlying task processor
 - `process() -> Bool` - a method performing a single processing step, returning whether more steps are needed
 - `check_updates() -> Undefined` - a method checking for task processing updates and sending relevant events
 - `try_cancel() -> Bool` - a method attempting to cancel the task before the result is resolved; it returns whether cancellation succeeded
 - `status_changed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about task status change, sending the status value
+- `task_started: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about task being initialised, sending the underlying processor instance
 - `task_progressed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about progress, sending a progress object
 - `task_finished: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about processing finishing with completion or failure, sending the processor with its result and error
 - `task_completed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about successful completion, sending the task result
@@ -73,6 +76,7 @@ In Cimpli library, the task manager and the worker are implemented with **Cimpli
 - `status` - set to **false** when the task is not finished, set to **true** otherwise
 - `result` - retrieves the result of the successful completion, if any
 - `error` - retrieves the cause of the failed processing, if any
+- `init` - does nothing by default
 - `process_step` - **must be implemented in the constructor derived from CimpliTaskProcessor** or otherwise set in CimpliTaskProcessor instance; otherwise, a "not implemented" exception will be thrown
 - `get_progress` - returns **undefined**, indicating no progress; the implementation may be replaced in the derived constructor
 - `is_finished` - returns whether the **status** is truthy or falsy; the implementation may be replaced in the derived constructor (e.g. to check named statuses)
@@ -96,6 +100,7 @@ CimpliTask implements the **Task** interface in the following way:
 - `is_cancelled` - initially false, set to true only upon cancellation
 - `get_result` - relays the result of the underlying processor
 - `get_error` - relays the error of the underlying processor
+- `init` - performs the underlying initialisation logic and notifies about the task being started
 - `process` - performs the underlying processing step
 - `check_updates` - checks the task changes and notifies about status update, progress update and task finishing; after finishing and sending events, it cleans up the underlying processor
 - `try_cancel` - if task wasn't already finished, marks it as finished and cancelled, sends the task cancellation notification and cleans up the underlying processor
@@ -111,6 +116,8 @@ CimpliTask implements the **Task** interface in the following way:
 **CimpliWorker** is a basic worket implementation, managing a single underlying task. Its constructor has the following arguments:
 
 - `task: Task` - the underlying task to process
+
+Because this implementation is meant to manage only single tasks, the underlying task is initialised within the worker constructor.
 
 CimpliWorker implements the **Worker** interface in the following way:
 
