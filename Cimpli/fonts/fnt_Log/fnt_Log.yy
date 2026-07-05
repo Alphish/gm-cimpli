@@ -119,8 +119,8 @@
   "maintainGms1Font":false,
   "name":"fnt_Log",
   "parent":{
-    "name":"Demo",
-    "path":"folders/Demo.yy",
+    "name":"Common",
+    "path":"folders/Demo/Common.yy",
   },
   "pointRounding":0,
   "ranges":[

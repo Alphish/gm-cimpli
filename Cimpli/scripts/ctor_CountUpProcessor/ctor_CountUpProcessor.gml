@@ -22,6 +22,6 @@ function CountUpProcessor(_terms) : CimpliTaskProcessor() constructor {
     static cleanup = function(_auto) {
         // it may or may not tell the garbage collector to grab it faster
         delete remaining_terms;
-        ctrl_CimpliDemo.logger.log_debug($"Counter task cleanup completed. AUTO={_auto}");
+        ctrl_CounterObserver.logger.log_debug($"Counter task cleanup completed. AUTO={_auto}");
     }
 }

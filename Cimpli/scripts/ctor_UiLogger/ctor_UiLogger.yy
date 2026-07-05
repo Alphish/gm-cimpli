@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ctor_UiLogger",
   "parent":{
-    "name":"Demo",
-    "path":"folders/Demo.yy",
+    "name":"CounterObserver",
+    "path":"folders/Demo/CounterObserver.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

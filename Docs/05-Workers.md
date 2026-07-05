@@ -4,11 +4,11 @@
 
 # Workers
 
-The worker system helps manage long-running tasks so they can be executed over multiple frames. With such a system, it's possible to adapt the amount of time spent on background tasks each frame while keeping player interaction functional.
+The workers system helps manage long-running tasks so they can be executed over multiple frames. With such a system, it's possible to adapt the amount of time spent on background tasks each frame while keeping player interaction functional.
 
 ## Interfaces
 
-The worker system uses the following types:
+The workers system uses the following types:
 
 - **TaskProcessor** interface, exposing methods for processing task logic and progress tracking
 - **Task** interface, exposing methods for managing task processing, as well as event subjects notifying about task changes
@@ -129,7 +129,7 @@ CimpliWorker implements the **Worker** interface in the following way:
 
 ## Example
 
-The following example demonstrates using the worker system for procedural generation.
+The following example demonstrates using the workers system for procedural generation.
 
 The `DungeonGeneratorProcessor` constructor:
 
@@ -197,3 +197,5 @@ draw_text(display_get_gui_width() div 2, display_get_gui_height() div 2, $"Gener
 ```
 
 With such a system, the dungeon will be gradually generated while the player can see the progress.
+
+**Next:** [Providers](/Docs/06-Providers.md)

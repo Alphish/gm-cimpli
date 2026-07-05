@@ -10,8 +10,8 @@
   "name":"ui_ActionButton",
   "overriddenProperties":[],
   "parent":{
-    "name":"Demo",
-    "path":"folders/Demo.yy",
+    "name":"Common",
+    "path":"folders/Demo/Common.yy",
   },
   "parentObjectId":null,
   "persistent":false,

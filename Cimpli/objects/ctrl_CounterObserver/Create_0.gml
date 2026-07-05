@@ -151,7 +151,7 @@ rebuild_buttons = function() {
     }
     
     array_foreach(all_observers, function(_observer, _index) {
-        instance_create_layer(220, 300 + 40 * _index, layer, ui_ActionButton, {
+        instance_create_layer(220, 220 + 40 * _index, layer, ui_ActionButton, {
             text: $"Unobs. {_observer.type} #{_observer.index}",
             command: remove_observer_command,
             command_parameter: _observer,
@@ -169,10 +169,6 @@ rebuild_buttons = function() {
 
 view_instructions_command = new CimpliCommand(function() {
     layer_set_visible("Instructions", true);
-});
-
-visit_website_command = new CimpliCommand(function() {
-    url_open("https://github.com/Alphish/gm-cimpli");
 });
 
 // -------
