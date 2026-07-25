@@ -9,9 +9,9 @@ function CimpliTask(_processor) constructor {
     /// @returns {Bool}
     is_finished = false;
     
-    /// @desc Indicates whether the task has been cancelled.
+    /// @desc Indicates whether the task has been canceled.
     /// @returns {Bool}
-    is_cancelled = false;
+    is_canceled = false;
     
     /// @ignore
     previous_status = processor.status;
@@ -42,7 +42,7 @@ function CimpliTask(_processor) constructor {
     
     /// @desc The event subject notifying about the task cancellation.
     /// @returns {Struct}
-    task_cancelled = new CimpliEventSubject(self);
+    task_canceled = new CimpliEventSubject(self);
     
     /// @desc Gets whichever result the task produced, if any.
     /// @returns {Any}
@@ -100,8 +100,8 @@ function CimpliTask(_processor) constructor {
             return false;
         
         is_finished = true;
-        is_cancelled = true;
-        task_cancelled.send();
+        is_canceled = true;
+        task_canceled.send();
         
         processor.cleanup(/* auto */ true);
         return true;
