@@ -56,7 +56,7 @@ function CimpliWorker(_task) constructor {
         
         var _step_result = false;
         while (!_step_result) {
-            _step_result = step();
+            _step_result = task.process();
         }
         
         task.check_updates();
