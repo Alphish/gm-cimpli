@@ -34,7 +34,7 @@ Because Feather doesn't recognise interface types, the task type is specified in
 The **Task** interface requires the following members:
 
 - `is_finished: Bool` - a variable indicating whether the task has been finished by completion or cancellation
-- `is_cancelled: Bool` - a variable indicating whether the task has been cancelled
+- `is_canceled: Bool` - a variable indicating whether the task has been canceled
 - `get_result() -> Any` - a method returning the processing result, if any
 - `get_error() -> Any` - a method returning the processing error, if any
 - `init() -> Undefined` - a method initialising the underlying task processor
@@ -47,7 +47,7 @@ The **Task** interface requires the following members:
 - `task_finished: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about processing finishing with completion or failure, sending the processor with its result and error
 - `task_completed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about successful completion, sending the task result
 - `task_failed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about failure, sending the task error
-- `task_cancelled: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about cancellation
+- `task_canceled: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about cancellation
 
 The task implementation should clean up the underlying processor after finishing or cancelling. To allow accessing task processor data from the relevant events, the cleanup should be performed after sending the events.
 
@@ -97,19 +97,19 @@ Additionally, CimpliTaskProcessor exposes the following utility methods that can
 CimpliTask implements the **Task** interface in the following way:
 
 - `is_finished` - initially false, set to true upon completion or cancellation
-- `is_cancelled` - initially false, set to true only upon cancellation
+- `is_canceled` - initially false, set to true only upon cancellation
 - `get_result` - relays the result of the underlying processor
 - `get_error` - relays the error of the underlying processor
 - `init` - performs the underlying initialisation logic and notifies about the task being started
 - `process` - performs the underlying processing step
 - `check_updates` - checks the task changes and notifies about status update, progress update and task finishing; after finishing and sending events, it cleans up the underlying processor
-- `try_cancel` - if task wasn't already finished, marks it as finished and cancelled, sends the task cancellation notification and cleans up the underlying processor
+- `try_cancel` - if task wasn't already finished, marks it as finished and canceled, sends the task cancellation notification and cleans up the underlying processor
 - `status_changes` - automatically created as an instance of CimpliEventSubject
 - `task_progressed` - automatically created as an instance of CimpliEventSubject
 - `task_finished` - automatically created as an instance of CimpliEventSubject
 - `task_completed` - automatically created as an instance of CimpliEventSubject
 - `task_failed` - automatically created as an instance of CimpliEventSubject
-- `task_cancelled` - automatically created as an instance of CimpliEventSubject
+- `task_canceled` - automatically created as an instance of CimpliEventSubject
 
 ---
 
