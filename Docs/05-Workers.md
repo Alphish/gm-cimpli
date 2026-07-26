@@ -4,11 +4,11 @@
 
 # Workers
 
-The worker system helps manage long-running tasks so they can be executed over multiple frames. With such a system, it's possible to adapt the amount of time spent on background tasks each frame while keeping player interaction functional.
+The workers system helps manage long-running tasks so they can be executed over multiple frames. With such a system, it's possible to adapt the amount of time spent on background tasks each frame while keeping player interaction functional.
 
 ## Interfaces
 
-The worker system uses the following types:
+The workers system uses the following types:
 
 - **TaskProcessor** interface, exposing methods for processing task logic and progress tracking
 - **Task** interface, exposing methods for managing task processing, as well as event subjects notifying about task changes
@@ -21,9 +21,11 @@ The **TaskProcessor** interface requires the following members:
 - `status: Any` - the status of the task processing
 - `result: Any` - the result of successful task completion
 - `error: Any` - the error causing the task failure
+- `init() -> Undefined` - a method reserving whatever resources are required by the task; by putting resource reservation in this method as opposed to the constructor, one may create many tasks in advance while only having resources reserved for ongoing ones
 - `process_step() -> Bool` - a method performing a single processing step, returning whether more steps are needed
 - `get_progress() -> Any` - a method returning the processing progress so far
 - `is_finished() -> Bool` - a method returning whether the processing has finished with completion or error
+- `cleanup(auto: Bool) -> Undefined` - a method cleaning up whatever resources were reserved by the task; the "auto" flag indicates whether the cleanup call comes from the general task processing (true) or is done explicitly (false)
 
 Because Feather doesn't recognise interface types, the task type is specified in JSDoc as `Struct`
 
@@ -32,18 +34,22 @@ Because Feather doesn't recognise interface types, the task type is specified in
 The **Task** interface requires the following members:
 
 - `is_finished: Bool` - a variable indicating whether the task has been finished by completion or cancellation
-- `is_cancelled: Bool` - a variable indicating whether the task has been cancelled
-- `get_result(): Any` - a method returning the processing result, if any
-- `get_error(): Any` - a method returning the processing error, if any
+- `is_canceled: Bool` - a variable indicating whether the task has been canceled
+- `get_result() -> Any` - a method returning the processing result, if any
+- `get_error() -> Any` - a method returning the processing error, if any
+- `init() -> Undefined` - a method initialising the underlying task processor
 - `process() -> Bool` - a method performing a single processing step, returning whether more steps are needed
 - `check_updates() -> Undefined` - a method checking for task processing updates and sending relevant events
 - `try_cancel() -> Bool` - a method attempting to cancel the task before the result is resolved; it returns whether cancellation succeeded
 - `status_changed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about task status change, sending the status value
+- `task_started: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about task being initialised, sending the underlying processor instance
 - `task_progressed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about progress, sending a progress object
 - `task_finished: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about processing finishing with completion or failure, sending the processor with its result and error
 - `task_completed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about successful completion, sending the task result
 - `task_failed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about failure, sending the task error
-- `task_cancelled: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about cancellation
+- `task_canceled: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about cancellation
+
+The task implementation should clean up the underlying processor after finishing or cancelling. To allow accessing task processor data from the relevant events, the cleanup should be performed after sending the events.
 
 Because Feather doesn't recognise interface types, the task type is specified in JSDoc as `Struct`
 
@@ -70,9 +76,11 @@ In Cimpli library, the task manager and the worker are implemented with **Cimpli
 - `status` - set to **false** when the task is not finished, set to **true** otherwise
 - `result` - retrieves the result of the successful completion, if any
 - `error` - retrieves the cause of the failed processing, if any
+- `init` - does nothing by default
 - `process_step` - **must be implemented in the constructor derived from CimpliTaskProcessor** or otherwise set in CimpliTaskProcessor instance; otherwise, a "not implemented" exception will be thrown
 - `get_progress` - returns **undefined**, indicating no progress; the implementation may be replaced in the derived constructor
 - `is_finished` - returns whether the **status** is truthy or falsy; the implementation may be replaced in the derived constructor (e.g. to check named statuses)
+- `cleanup` - does nothing by default
 
 Additionally, CimpliTaskProcessor exposes the following utility methods that can be returned from the processing step:
 
@@ -89,24 +97,27 @@ Additionally, CimpliTaskProcessor exposes the following utility methods that can
 CimpliTask implements the **Task** interface in the following way:
 
 - `is_finished` - initially false, set to true upon completion or cancellation
-- `is_cancelled` - initially false, set to true only upon cancellation
+- `is_canceled` - initially false, set to true only upon cancellation
 - `get_result` - relays the result of the underlying processor
 - `get_error` - relays the error of the underlying processor
+- `init` - performs the underlying initialisation logic and notifies about the task being started
 - `process` - performs the underlying processing step
-- `check_updates` - checks the task changes and notifies about status update, progress update and task finishing
-- `try_cancel` - if task wasn't already finished, marks it as finished and cancelled and sends the task cancellation notification
+- `check_updates` - checks the task changes and notifies about status update, progress update and task finishing; after finishing and sending events, it cleans up the underlying processor
+- `try_cancel` - if task wasn't already finished, marks it as finished and canceled, sends the task cancellation notification and cleans up the underlying processor
 - `status_changes` - automatically created as an instance of CimpliEventSubject
 - `task_progressed` - automatically created as an instance of CimpliEventSubject
 - `task_finished` - automatically created as an instance of CimpliEventSubject
 - `task_completed` - automatically created as an instance of CimpliEventSubject
 - `task_failed` - automatically created as an instance of CimpliEventSubject
-- `task_cancelled` - automatically created as an instance of CimpliEventSubject
+- `task_canceled` - automatically created as an instance of CimpliEventSubject
 
 ---
 
 **CimpliWorker** is a basic worket implementation, managing a single underlying task. Its constructor has the following arguments:
 
 - `task: Task` - the underlying task to process
+
+Because this implementation is meant to manage only single tasks, the underlying task is initialised within the worker constructor.
 
 CimpliWorker implements the **Worker** interface in the following way:
 
@@ -118,7 +129,7 @@ CimpliWorker implements the **Worker** interface in the following way:
 
 ## Example
 
-The following example demonstrates using the worker system for procedural generation.
+The following example demonstrates using the workers system for procedural generation.
 
 The `DungeonGeneratorProcessor` constructor:
 
@@ -186,3 +197,5 @@ draw_text(display_get_gui_width() div 2, display_get_gui_height() div 2, $"Gener
 ```
 
 With such a system, the dungeon will be gradually generated while the player can see the progress.
+
+**Next:** [Providers](/Docs/06-Providers.md)

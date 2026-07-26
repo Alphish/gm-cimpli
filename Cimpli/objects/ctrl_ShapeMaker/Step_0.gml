@@ -7,7 +7,4 @@ if (layer_get_visible("Instructions")) {
 
 with (ui_ActionButton) event_user(0);
 with (ui_SelectButton) event_user(0);
-
-var _next_timer = get_timer() + 10000;
-if (!is_undefined(worker))
-    worker.run_until(_next_timer);
+with (obj_ShapePanel) event_user(0);

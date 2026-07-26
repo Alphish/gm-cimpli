@@ -12,6 +12,11 @@ function CimpliTaskProcessor() constructor {
     /// @returns {Any}
     error = undefined;
     
+    /// @desc Prepares the task resources, if any.
+    static init = function() {
+        // nothing by default
+    }
+    
     /// @desc Performs a single step of the task processing logic.
     /// @returns {Bool}
     static process_step = function() {
@@ -51,5 +56,11 @@ function CimpliTaskProcessor() constructor {
     /// @returns {Bool}
     static is_finished = function() {
         return bool(status);
+    }
+    
+    /// @desc Cleans up the task resources, if any.
+    /// @arg {Bool} auto        Indicates if the cleanup was called manually (false) or from the general task management system (true).
+    static cleanup = function(_auto = false) {
+        // nothing by default
     }
 }

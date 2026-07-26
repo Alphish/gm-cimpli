@@ -16,7 +16,7 @@ function CimpliProperty(_initial = undefined) constructor {
     }
     
     /// @desc Sets the value of the property.
-    /// @args {Any} value       The new value to set.
+    /// @arg {Any} value        The new value to set.
     static set_value = function(_value) {
         if (_value == value)
             return; // no changes needed

@@ -14,7 +14,7 @@ worker = undefined;
 calculation_started = new CimpliEventSubject(id);
 calculation_progressed = new CimpliEventSubject(id);
 calculation_completed = new CimpliEventSubject(id);
-calculation_cancelled = new CimpliEventSubject(id);
+calculation_canceled = new CimpliEventSubject(id);
 
 begin_calculation_command = new CimpliCommand(function() {
     if (!is_undefined(worker))
@@ -28,12 +28,13 @@ begin_calculation_command = new CimpliCommand(function() {
     
     var _processor = new CountUpProcessor(_number);
     var _task = new CimpliTask(_processor);
+    _task.task_started.add_handler(function(_processor) {
+        calculation_started.send(_processor.terms_count);
+    });
     _task.task_progressed.add_handler(method(calculation_progressed, calculation_progressed.send));
     _task.task_completed.add_handler(method(calculation_completed, calculation_completed.send));
-    _task.task_cancelled.add_handler(method(calculation_cancelled, calculation_cancelled.send));
+    _task.task_canceled.add_handler(method(calculation_canceled, calculation_canceled.send));
     worker = new CimpliWorker(_task);
-    
-    calculation_started.send(_number);
 });
 
 cancel_calculation_command = new CimpliCommand(function() {
@@ -87,8 +88,8 @@ observe_completion_command = new CimpliCommand(function() {
 }, can_add_observer);
 
 observe_cancellation_command = new CimpliCommand(function() {
-    add_observer(calculation_cancelled, "Cancel", function(_, _sender, _observer) {
-        logger.log_error($"Calculation has been cancelled (#{_observer.index})");
+    add_observer(calculation_canceled, "Cancel", function(_, _sender, _observer) {
+        logger.log_error($"Calculation has been canceled (#{_observer.index})");
     });
 }, can_add_observer);
 
@@ -120,7 +121,7 @@ clear_observers_command = new CimpliCommand(function() {
     calculation_started.clear_observers();
     calculation_progressed.clear_observers();
     calculation_completed.clear_observers();
-    calculation_cancelled.clear_observers();
+    calculation_canceled.clear_observers();
     
     calculation_arg_property.value_changed.clear_observers();
     log_level_property.value_changed.clear_observers();
@@ -150,7 +151,7 @@ rebuild_buttons = function() {
     }
     
     array_foreach(all_observers, function(_observer, _index) {
-        instance_create_layer(220, 300 + 40 * _index, layer, ui_ActionButton, {
+        instance_create_layer(220, 220 + 40 * _index, layer, ui_ActionButton, {
             text: $"Unobs. {_observer.type} #{_observer.index}",
             command: remove_observer_command,
             command_parameter: _observer,
@@ -168,10 +169,6 @@ rebuild_buttons = function() {
 
 view_instructions_command = new CimpliCommand(function() {
     layer_set_visible("Instructions", true);
-});
-
-visit_website_command = new CimpliCommand(function() {
-    url_open("https://github.com/Alphish/gm-cimpli");
 });
 
 // -------
