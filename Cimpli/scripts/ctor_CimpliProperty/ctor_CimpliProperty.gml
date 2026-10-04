@@ -8,7 +8,7 @@ function CimpliProperty(_initial = undefined) constructor {
     /// @ignore
     value_changed = undefined;
     
-    /// @desc Setups and retrieves the event subject notifying about a value change.
+    /// @desc Prepares and retrieves the event subject notifying about a value change.
     /// @returns {Struct}
     static when_value_changed_subject = function() {
         value_changed ??= new CimpliEventSubject(self);

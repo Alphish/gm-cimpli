@@ -37,49 +37,49 @@ function CimpliTask(_processor) constructor {
     /// @ignore
     task_canceled = undefined;
     
-    /// @desc Setups and retrieves the event subject notifying about the task status changing.
+    /// @desc Prepares and retrieves the event subject notifying about the task status changing.
     /// @returns {Struct}
     static when_status_changed_subject = function() {
         status_changed ??= new CimpliEventSubject(self);
         return status_changed;
     }
     
-    /// @desc Setups and retrieves the event subject notifying about the task starting.
+    /// @desc Prepares and retrieves the event subject notifying about the task starting.
     /// @returns {Struct}
     static when_task_started_subject = function() {
         task_started ??= new CimpliEventSubject(self);
         return task_started;
     }
     
-    /// @desc Setups and retrieves the event subject notifying about the task progress.
+    /// @desc Prepares and retrieves the event subject notifying about the task progress.
     /// @returns {Struct}
     static when_task_progressed_subject = function() {
         task_progressed ??= new CimpliEventSubject(self);
         return task_progressed;
     }
     
-    /// @desc Setups and retrieves the event subject notifying about the task finishing.
+    /// @desc Prepares and retrieves the event subject notifying about the task finishing.
     /// @returns {Struct}
     static when_task_finished_subject = function() {
         task_finished ??= new CimpliEventSubject(self);
         return task_finished;
     }
     
-    /// @desc Setups and retrieves the event subject notifying about the task successful completion.
+    /// @desc Prepares and retrieves the event subject notifying about the task successful completion.
     /// @returns {Struct}
     static when_task_completed_subject = function() {
         task_completed ??= new CimpliEventSubject(self);
         return task_completed;
     }
     
-    /// @desc Setups and retrieves the event subject notifying about the task failure.
+    /// @desc Prepares and retrieves the event subject notifying about the task failure.
     /// @returns {Struct}
     static when_task_failed_subject = function() {
         task_failed ??= new CimpliEventSubject(self);
         return task_failed;
     }
     
-    /// @desc Setups and retrieves the event subject notifying about the task cancellation.
+    /// @desc Prepares and retrieves the event subject notifying about the task cancellation.
     /// @returns {Struct}
     static when_task_canceled_subject = function() {
         task_canceled ??= new CimpliEventSubject(self);

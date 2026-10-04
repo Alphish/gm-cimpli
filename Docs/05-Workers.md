@@ -41,13 +41,13 @@ The **Task** interface requires the following members:
 - `process() -> Bool` - a method performing a single processing step, returning whether more steps are needed
 - `check_updates() -> Undefined` - a method checking for task processing updates and sending relevant events
 - `try_cancel() -> Bool` - a method attempting to cancel the task before the result is resolved; it returns whether cancellation succeeded
-- `status_changed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about task status change, sending the status value
-- `task_started: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about task being initialised, sending the underlying processor instance
-- `task_progressed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about progress, sending a progress object
-- `task_finished: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about processing finishing with completion or failure, sending the processor with its result and error
-- `task_completed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about successful completion, sending the task result
-- `task_failed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about failure, sending the task error
-- `task_canceled: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about cancellation
+- `when_status_changed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about the task status change, sending the status value
+- `when_task_started_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about the task being initialised, sending the underlying processor instance
+- `when_task_progressed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about the progress, sending a progress object
+- `when_task_finished_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about processing finishing with completion or failure, sending the processor with its result and error
+- `when_task_completed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about successful completion, sending the task result
+- `when_task_failed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about failure, sending the task error
+- `when_task_canceled_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about cancellation
 
 The task implementation should clean up the underlying processor after finishing or cancelling. To allow accessing task processor data from the relevant events, the cleanup should be performed after sending the events.
 
@@ -104,12 +104,13 @@ CimpliTask implements the **Task** interface in the following way:
 - `process` - performs the underlying processing step
 - `check_updates` - checks the task changes and notifies about status update, progress update and task finishing; after finishing and sending events, it cleans up the underlying processor
 - `try_cancel` - if task wasn't already finished, marks it as finished and canceled, sends the task cancellation notification and cleans up the underlying processor
-- `status_changes` - automatically created as an instance of CimpliEventSubject
-- `task_progressed` - automatically created as an instance of CimpliEventSubject
-- `task_finished` - automatically created as an instance of CimpliEventSubject
-- `task_completed` - automatically created as an instance of CimpliEventSubject
-- `task_failed` - automatically created as an instance of CimpliEventSubject
-- `task_canceled` - automatically created as an instance of CimpliEventSubject
+- `when_status_changed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
+- `when_task_started_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
+- `when_task_progressed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
+- `when_task_finished_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
+- `when_task_completed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
+- `when_task_failed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
+- `when_task_canceled_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
 
 ---
 
@@ -166,10 +167,10 @@ progress_percent = 0;
 
 task = new CimpliTask(generator);
 
-task.task_progressed.add_handler(function(_progress) {
+task.when_task_progressed_subject().add_handler(function(_progress) {
     progress_percent = round(100 * _progress.processed / _progress.total);
 });
-task.task_completed.add_handler(function(_dungeon) {
+task.when_task_completed_subject().add_handler(function(_dungeon) {
     instance_create_layer(0, 0, layer, ctrl_DungeonGameplay, { dungeon_data: _dungeon });
     instance_destroy();
 });
