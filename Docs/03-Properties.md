@@ -12,7 +12,7 @@ The properties system consists of a single type, the **Property** interface, whi
 
 - `get_value() -> Any` - a method to retrieve the property value
 - `set_value(value: Any) -> Undefined` - a method to set the property value
-- `value_changed: EventSubject` - an [event subject](/Docs/01-Events.md) that notifies about returned property value changing
+- `whem_value_changed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about returned property value changing
 
 Because Feather doesn't recognise interface types, the property type is specified in JSDoc as `Struct`
 
@@ -25,8 +25,8 @@ In Cimpli library, the property interface is implemented with **CimpliProperty**
 CimpliProperty implements the **Property** interface in the following way:
 
 - `get_value` - returns the value of its stored property
-- `set_value` - sets the value of its stored property and, if it's different, sends an event via the `value_changed` subject
-- `value_changed` - automatically created as an instance of CimpliEventSubject
+- `set_value` - sets the value of its stored property; if it's different from the previous value, sends an event from the subject available via the event subject retrieved with `when_value_changed_subject()`
+- `when_value_changed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
 
 ## Example
 
@@ -45,9 +45,9 @@ recalculate_color = function() {
     color = make_color_rgb(red_property.get_value(), green_property.get_value(), blue_property.get_value());
 }
 
-red_property.value_changed.add_handler(recalculate_color);
-green_property.value_changed.add_handler(recalculate_color);
-blue_property.value_changed.add_handler(recalculate_color);
+red_property.when_value_changed_subject().add_handler(recalculate_color);
+green_property.when_value_changed_subject().add_handler(recalculate_color);
+blue_property.when_value_changed_subject().add_handler(recalculate_color);
 
 // create sliders for specific components
 instance_create_depth(x + 4, y + 4, depth - 10, ui_ColorSlider, { color_component_property: red_property, image_blend: c_red });

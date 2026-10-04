@@ -5,9 +5,15 @@ function CimpliProperty(_initial = undefined) constructor {
     /// @returns {Any}
     value = _initial;
     
-    /// @desc The event subject notifying about value changes.
+    /// @ignore
+    value_changed = undefined;
+    
+    /// @desc Prepares and retrieves the event subject notifying about a value change.
     /// @returns {Struct}
-    value_changed = new CimpliEventSubject(self);
+    static when_value_changed_subject = function() {
+        value_changed ??= new CimpliEventSubject(self);
+        return value_changed;
+    }
     
     /// @desc Gets the value of the property.
     /// @returns {Any}
@@ -22,6 +28,7 @@ function CimpliProperty(_initial = undefined) constructor {
             return; // no changes needed
         
         value = _value;
-        value_changed.send(value);
+        if (!is_undefined(value_changed))
+            value_changed.send(value);
     }
 }

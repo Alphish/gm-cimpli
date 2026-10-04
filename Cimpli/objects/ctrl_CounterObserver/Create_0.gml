@@ -1,6 +1,6 @@
 logger = new UiLogger("TRACE");
 log_level_property = new CimpliProperty("TRACE");
-log_level_property.value_changed.add_handler(function(_value) {
+log_level_property.when_value_changed_subject().add_handler(function(_value) {
     logger = new UiLogger(_value);
 });
 
@@ -9,6 +9,7 @@ log_level_property.value_changed.add_handler(function(_value) {
 // ------------
 
 calculation_arg_property = new CimpliProperty();
+calculation_arg_property.when_value_changed_subject(); // setup the subject so it exists
 
 worker = undefined;
 calculation_started = new CimpliEventSubject(id);
@@ -28,12 +29,12 @@ begin_calculation_command = new CimpliCommand(function() {
     
     var _processor = new CountUpProcessor(_number);
     var _task = new CimpliTask(_processor);
-    _task.task_started.add_handler(function(_processor) {
+    _task.when_task_started_subject().add_handler(function(_processor) {
         calculation_started.send(_processor.terms_count);
     });
-    _task.task_progressed.add_handler(method(calculation_progressed, calculation_progressed.send));
-    _task.task_completed.add_handler(method(calculation_completed, calculation_completed.send));
-    _task.task_canceled.add_handler(method(calculation_canceled, calculation_canceled.send));
+    _task.when_task_progressed_subject().add_handler(method(calculation_progressed, calculation_progressed.send));
+    _task.when_task_completed_subject().add_handler(method(calculation_completed, calculation_completed.send));
+    _task.when_task_canceled_subject().add_handler(method(calculation_canceled, calculation_canceled.send));
     worker = new CimpliWorker(_task);
 });
 
@@ -123,9 +124,9 @@ clear_observers_command = new CimpliCommand(function() {
     calculation_completed.clear_observers();
     calculation_canceled.clear_observers();
     
-    calculation_arg_property.value_changed.clear_observers();
-    log_level_property.value_changed.clear_observers();
-    log_level_property.value_changed.add_handler(function(_value) {
+    calculation_arg_property.when_value_changed_subject().clear_observers();
+    log_level_property.when_value_changed_subject().clear_observers();
+    log_level_property.when_value_changed_subject().add_handler(function(_value) {
         logger = new UiLogger(_value);
     });
     

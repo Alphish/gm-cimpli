@@ -16,33 +16,75 @@ function CimpliTask(_processor) constructor {
     /// @ignore
     previous_status = processor.status;
     
-    /// @desc The event subject notifying about the task status changing.
-    /// @returns {Struct}
-    status_changed = new CimpliEventSubject(self);
+    /// @ignore
+    status_changed = undefined;
     
-    /// @desc The event subject notifying about the task starting.
-    /// @returns {Struct}
-    task_started = new CimpliEventSubject(self);
+    /// @ignore
+    task_started = undefined;
     
-    /// @desc The event subject notifying about the task progress.
-    /// @returns {Struct}
-    task_progressed = new CimpliEventSubject(self);
+    /// @ignore
+    task_progressed = undefined;
     
-    /// @desc The event subject notifying about the task finishing.
-    /// @returns {Struct}
-    task_finished = new CimpliEventSubject(self);
+    /// @ignore
+    task_finished = undefined;
     
-    /// @desc The event subject notifying about the task successful completion.
-    /// @returns {Struct}
-    task_completed = new CimpliEventSubject(self);
+    /// @ignore
+    task_completed = undefined;
     
-    /// @desc The event subject notifying about the task failure.
-    /// @returns {Struct}
-    task_failed = new CimpliEventSubject(self);
+    /// @ignore
+    task_failed = undefined;
     
-    /// @desc The event subject notifying about the task cancellation.
+    /// @ignore
+    task_canceled = undefined;
+    
+    /// @desc Prepares and retrieves the event subject notifying about the task status changing.
     /// @returns {Struct}
-    task_canceled = new CimpliEventSubject(self);
+    static when_status_changed_subject = function() {
+        status_changed ??= new CimpliEventSubject(self);
+        return status_changed;
+    }
+    
+    /// @desc Prepares and retrieves the event subject notifying about the task starting.
+    /// @returns {Struct}
+    static when_task_started_subject = function() {
+        task_started ??= new CimpliEventSubject(self);
+        return task_started;
+    }
+    
+    /// @desc Prepares and retrieves the event subject notifying about the task progress.
+    /// @returns {Struct}
+    static when_task_progressed_subject = function() {
+        task_progressed ??= new CimpliEventSubject(self);
+        return task_progressed;
+    }
+    
+    /// @desc Prepares and retrieves the event subject notifying about the task finishing.
+    /// @returns {Struct}
+    static when_task_finished_subject = function() {
+        task_finished ??= new CimpliEventSubject(self);
+        return task_finished;
+    }
+    
+    /// @desc Prepares and retrieves the event subject notifying about the task successful completion.
+    /// @returns {Struct}
+    static when_task_completed_subject = function() {
+        task_completed ??= new CimpliEventSubject(self);
+        return task_completed;
+    }
+    
+    /// @desc Prepares and retrieves the event subject notifying about the task failure.
+    /// @returns {Struct}
+    static when_task_failed_subject = function() {
+        task_failed ??= new CimpliEventSubject(self);
+        return task_failed;
+    }
+    
+    /// @desc Prepares and retrieves the event subject notifying about the task cancellation.
+    /// @returns {Struct}
+    static when_task_canceled_subject = function() {
+        task_canceled ??= new CimpliEventSubject(self);
+        return task_canceled;
+    }
     
     /// @desc Gets whichever result the task produced, if any.
     /// @returns {Any}
@@ -59,7 +101,7 @@ function CimpliTask(_processor) constructor {
     /// @desc Prepares the task resources, if any.
     init = function() {
         processor.init();
-        task_started.send(processor);
+        send_event(task_started, processor);
     }
     
     /// @desc Performs a single processing step and returns whether the processing should stop.
@@ -73,21 +115,21 @@ function CimpliTask(_processor) constructor {
         
         if (processor.status != previous_status) {
             previous_status = processor.status;
-            status_changed.send(processor.status);
+            send_event(status_changed, processor.status);
         }
         
         var _progress = processor.get_progress();
         if (!is_undefined(_progress))
-            task_progressed.send(_progress);
+            send_event(task_progressed, _progress);
         
         if (processor.is_finished()) {
             is_finished = true;
-            task_finished.send(processor);
+            send_event(task_finished, processor);
             
             if (is_undefined(processor.error))
-                task_completed.send(processor.result);
+                send_event(task_completed, processor.result);
             else
-                task_failed.send(processor.error);
+                send_event(task_failed, processor.error);
             
             processor.cleanup(/* auto */ true);
         }
@@ -101,9 +143,15 @@ function CimpliTask(_processor) constructor {
         
         is_finished = true;
         is_canceled = true;
-        task_canceled.send();
+        send_event(task_canceled);
         
         processor.cleanup(/* auto */ true);
         return true;
+    }
+    
+    /// @ignore
+    static send_event = function(_subject, _data = undefined) {
+        if (!is_undefined(_subject))
+            _subject.send(_data);
     }
 }
