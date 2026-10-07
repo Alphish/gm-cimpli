@@ -23,8 +23,8 @@ function CimpliEventObserver(_subject, _handler) constructor {
         return subject.remove_observer(self);
     }
     
-    /// #desc Ensures a correct state after observer removal, whatever it is for the given observer.
-    static on_removal = function() {
-        // a simple observer needs no additional removal logic
+    /// #desc Performs the cleanup after the observer is detached from its subject.
+    static cleanup = function() {
+        // a simple observer needs no additional cleanup logic
     }
 }

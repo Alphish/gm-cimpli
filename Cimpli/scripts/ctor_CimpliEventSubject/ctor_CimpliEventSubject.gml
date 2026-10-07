@@ -1,8 +1,8 @@
 /// @desc A basic event subject implementation, managing its observers and sending events to them.
-/// @arg {Any} [sender]         The entity passed as the event sender.
-function CimpliEventSubject(_sender = undefined) constructor {
+/// @arg {Any} [owner]          The entity the event subject belongs to.
+function CimpliEventSubject(_owner = undefined) constructor {
     /// @ignore
-    sender = _sender ?? self;
+    owner = _owner ?? self;
     
     /// @ignore
     observers = [];
@@ -31,26 +31,37 @@ function CimpliEventSubject(_sender = undefined) constructor {
         if (_index < 0)
             return false;
         
-        _observer.on_removal();
+        _observer.cleanup();
         array_delete(observers, _index, 1);
         return true;
+    }
+    
+    /// @desc Checks if the event subject has no linked observers.
+    /// @returns {Bool}
+    static is_empty = function() {
+        return array_length(observers) == 0;
     }
     
     /// @desc Removes all observers so they're no longer notified about future events.
     static clear_observers = function() {
         array_foreach(observers, function(_observer) {
-            _observer.on_removal();
+            _observer.cleanup();
         });
         array_resize(observers, 0);
     }
     
     /// @desc Sends the event to notify the observers. Event data and a sender override can be optionally provided.
     /// @arg {Any} [data]           The data to send to observers.
-    /// @arg {Any} [sender]         The entity to report as the event sender, as opposed to subject's own sender.
+    /// @arg {Any} [sender]         The entity to report as the event sender, as opposed to the event subject owner.
     static send = function(_data = undefined, _sender = undefined) {
-        _sender ??= sender;
+        _sender ??= owner;
         for (var i = 0, _count = array_length(observers); i < _count; i++) {
             observers[i].receive(_data, _sender);
         }
+    }
+    
+    /// @desc Performs the cleanup once the event subject is no longer relevant.
+    static cleanup = function() {
+        clear_observers();
     }
 }

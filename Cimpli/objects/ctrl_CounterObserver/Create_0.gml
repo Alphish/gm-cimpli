@@ -58,7 +58,7 @@ add_observer = function(_subject, _type, _handler) {
     var _observer = _subject.add_handler(_handler);
     _observer.type = _type;
     _observer.index = observer_index++;
-    _observer.on_removal = method({ observer: _observer, subject: observer_removed }, function() {
+    _observer.cleanup = method({ observer: _observer, subject: observer_removed }, function() {
         subject.send(observer);
     });
     array_push(all_observers, _observer);
