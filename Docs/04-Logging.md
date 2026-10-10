@@ -1,6 +1,6 @@
 [Home](/README.md)
 
-**Previous:** [Properties](/Docs/03-Properties.md)
+**Previous:** [Signals](/Docs/03-Signals.md)
 
 # Logging
 
@@ -21,7 +21,7 @@ The logging system consists of a single type, the **Logger** interface, which re
 
 For more flexibility, a logger can accept any kind of message, and it's up to the implementation to handle whatever message comes its way accordingly.
 
-Because Feather doesn't recognise interface types, the property type is specified in JSDoc as `Struct`
+Because Feather doesn't recognise interface types, the logger type is specified in JSDoc as `Struct`
 
 ## Implementation
 

@@ -1,7 +1,7 @@
-/// @desc A basic property implementation, with a value getter and setter and value change event subject.
-/// @arg {Any} [initial]        The initial property value.
-function CimpliProperty(_initial = undefined) constructor {
-    /// @desc The value of the property.
+/// @desc A basic signal implementation, with a value getter and setter and value change event subject.
+/// @arg {Any} [initial]        The initial signal value.
+function CimpliSignal(_initial = undefined) constructor {
+    /// @desc The signal value.
     /// @returns {Any}
     value = _initial;
     
@@ -15,13 +15,13 @@ function CimpliProperty(_initial = undefined) constructor {
         return value_changed;
     }
     
-    /// @desc Gets the value of the property.
+    /// @desc Gets the signal value.
     /// @returns {Any}
     static get_value = function() {
         return value;
     }
     
-    /// @desc Sets the value of the property.
+    /// @desc Sets the signal value.
     /// @arg {Any} value        The new value to set.
     static set_value = function(_value) {
         if (_value == value)

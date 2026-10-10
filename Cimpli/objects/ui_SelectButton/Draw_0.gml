@@ -1,4 +1,4 @@
-if (property.get_value() == value)
+if (signal.get_value() == value)
     image_blend = alt_color;
 else if (is_hovered)
     image_blend = merge_color(alt_color, main_color, 0.5);

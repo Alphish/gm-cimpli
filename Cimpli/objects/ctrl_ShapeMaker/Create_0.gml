@@ -1,6 +1,6 @@
-shape_sprite_property = new CimpliProperty(spr_ShapeRound);
-shape_size_property = new CimpliProperty(1);
-shape_color_property = new CimpliProperty(c_red);
+shape_sprite_signal = new CimpliSignal(spr_ShapeRound);
+shape_size_signal = new CimpliSignal(1);
+shape_color_signal = new CimpliSignal(c_red);
 
 shape_provider = new CimpliProvider();
 
@@ -23,8 +23,8 @@ var _star_instance = instance_create_layer(room_width div 2, room_height div 2, 
 shape_provider.add_value(spr_ShapeStar, _star_instance);
 
 make_shape = function(_x, _y) {
-    var _sprite = shape_sprite_property.get_value();
-    var _args = { size: shape_size_property.get_value(), color: merge_color(shape_color_property.get_value(), c_white, 0.5) };
+    var _sprite = shape_sprite_signal.get_value();
+    var _args = { size: shape_size_signal.get_value(), color: merge_color(shape_color_signal.get_value(), c_white, 0.5) };
     var _shape = shape_provider.provide(_sprite, _args);
     _shape.x = _x;
     _shape.y = _y;
