@@ -61,4 +61,4 @@ if (position_meeting(mouse_x, mouse_y, id) && mouse_check_button_pressed(mb_left
     ctrl_LevelEditor.save_command.execute();
 ```
 
-**Next:** [Properties](/Docs/03-Properties.md)
+**Next:** [Signals](/Docs/03-Signals.md)

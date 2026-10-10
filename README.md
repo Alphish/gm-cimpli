@@ -42,8 +42,8 @@ The following types are specified and implemented in Cimpli:
     - the **EventObserver** interface to receive and handle these notifications, implemented with the **CimpliEventObserver** constructor
 - [Commands](/Docs/02-Commands.md)
     - the **Command** interface to store execution logic regardless of interaction used to trigger it, implemented with the **CimpliCommand** constructor
-- [Properties](/Docs/03-Properties.md)
-    - the **Property** interface to keep track of a value and notify about its changes, implemented with the **CimpliProperty** constructor
+- [Signals](/Docs/03-Signals.md)
+    - the **Signal** interface to keep track of a value and notify about its changes, implemented with the **CimpliSignal** constructor
 - [Logging](/Docs/04-Logging.md)
     - the **Logger** interface to handle incoming messages of varying levels, implemented with the **CimpliLogger** constructor
 - [Workers](/Docs/05-Workers.md)
