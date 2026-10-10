@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"ctor_CimpliProperty",
+  "%Name":"ctor_CimpliSignal",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"ctor_CimpliProperty",
+  "name":"ctor_CimpliSignal",
   "parent":{
     "name":"Cimpli",
     "path":"folders/_Packages/Alphish/Cimpli.yy",
