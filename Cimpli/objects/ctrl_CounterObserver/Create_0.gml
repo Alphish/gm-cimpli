@@ -1,6 +1,6 @@
 logger = new UiLogger("TRACE");
-log_level_property = new CimpliProperty("TRACE");
-log_level_property.when_value_changed_subject().add_handler(function(_value) {
+log_level_signal = new CimpliSignal("TRACE");
+log_level_signal.when_value_changed_subject().add_handler(function(_value) {
     logger = new UiLogger(_value);
 });
 
@@ -8,8 +8,8 @@ log_level_property.when_value_changed_subject().add_handler(function(_value) {
 // Calculations
 // ------------
 
-calculation_arg_property = new CimpliProperty();
-calculation_arg_property.when_value_changed_subject(); // setup the subject so it exists
+calculation_arg_signal = new CimpliSignal();
+calculation_arg_signal.when_value_changed_subject(); // setup the subject so it exists
 
 worker = undefined;
 calculation_started = new CimpliEventSubject(id);
@@ -21,7 +21,7 @@ begin_calculation_command = new CimpliCommand(function() {
     if (!is_undefined(worker))
         worker.try_cancel();
     
-    var _number = calculation_arg_property.get_value();
+    var _number = calculation_arg_signal.get_value();
     if (is_undefined(_number)) {
         logger.log_critical($"Unknown number of terms to calculate!");
         return;
@@ -95,13 +95,13 @@ observe_cancellation_command = new CimpliCommand(function() {
 }, can_add_observer);
 
 observe_count_command = new CimpliCommand(function() {
-    add_observer(calculation_arg_property.value_changed, "Count", function(_number, _sender, _observer) {
+    add_observer(calculation_argsignal.value_changed, "Count", function(_number, _sender, _observer) {
         logger.log_debug($"Terms count changed to {_number} (#{_observer.index})");
     });
 }, can_add_observer);
 
 observe_loglevel_command = new CimpliCommand(function() {
-    add_observer(log_level_property.value_changed, "Log Level", function(_level, _sender, _observer) {
+    add_observer(log_level_signal.value_changed, "Log Level", function(_level, _sender, _observer) {
         logger.log_critical($"Log level changed to {_level} (#{_observer.index})");
     });
 }, can_add_observer);
@@ -124,9 +124,9 @@ clear_observers_command = new CimpliCommand(function() {
     calculation_completed.clear_observers();
     calculation_canceled.clear_observers();
     
-    calculation_arg_property.when_value_changed_subject().clear_observers();
-    log_level_property.when_value_changed_subject().clear_observers();
-    log_level_property.when_value_changed_subject().add_handler(function(_value) {
+    calculation_arg_signal.when_value_changed_subject().clear_observers();
+    log_level_signal.when_value_changed_subject().clear_observers();
+    log_level_signal.when_value_changed_subject().add_handler(function(_value) {
         logger = new UiLogger(_value);
     });
     
