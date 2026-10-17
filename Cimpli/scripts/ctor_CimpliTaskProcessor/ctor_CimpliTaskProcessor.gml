@@ -29,12 +29,6 @@ function CimpliTaskProcessor() constructor {
         fail_with(_exception);
     }
     
-    /// @desc Returns the task progress so far.
-    /// @returns {Any}
-    static get_progress = function() {
-        return undefined;
-    }
-    
     /// @desc Finishes processing the task.
     /// @returns {Bool}
     static finish = function() {
