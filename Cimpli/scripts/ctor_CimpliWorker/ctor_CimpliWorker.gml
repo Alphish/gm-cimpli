@@ -90,9 +90,13 @@ function CimpliWorker(_task) constructor {
         return task.is_finished;
     }
     
-    /// @desc Attempts to cancel the underlying task and returns whether it was successful.
+    /// @desc Attempts to cancel the processed task. If a specific task is given other than the underlying task, no cancellation will take place.
+    /// @arg {Struct} [task]    The specific task to cancel, if any.
     /// @returns {Bool}
-    static try_cancel = function() {
+    static try_cancel = function(_task = undefined) {
+        if (!is_undefined(_task) && _task != task)
+            return false;
+        
         return task.try_cancel();
     }
 }
