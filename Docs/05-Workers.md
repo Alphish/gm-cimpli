@@ -64,7 +64,7 @@ The **Worker** interface requires the following methods:
 - `run_step() -> Bool` - runs a single processing step of the underlying task and returns whether the task was finished
 - `run_until(limit: Real, [steps]: Real) -> Bool` - runs as many steps as possible within the given time limit, with an optional number of guaranteed steps (1 by default); returns whether the task was finished
 - `run_to_end() -> Bool` - runs the underlying task until completion or interruption and returns whether the task was finished
-- `try_cancel() -> Bool` - attempts to cancel the underlying task and returns whether it was successful
+- `try_cancel([task]: Task) -> Bool` - attempts to cancel a given task, or all of the worker's task if no task is specified
 
 Because Feather doesn't recognise interface types, the worker type is specified in JSDoc as `Struct`
 
@@ -131,7 +131,7 @@ CimpliWorker implements the **Worker** interface in the following way:
 - `run_step` - performs a single task processing step, then sends the progress update; if no more processing steps are needed, attempts the task completion
 - `run_until` - performs processing steps until reaching the time limit, then sends the progress update; if no more processing steps are needed, attempts the task completion
 - `run_to_end` - performs task processing steps until it's indicated no more steps are needed, then sends the progress update and attempts the task completion
-- `try_cancel` - attempts to cancel the underlying task
+- `try_cancel` - attempts to cancel the underlying task; if a specific task is given, it will be cancelled only if it's the worker's underlying task
 
 ## Example
 
