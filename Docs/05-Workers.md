@@ -27,6 +27,8 @@ The **TaskProcessor** interface requires the following members:
 - `is_finished() -> Bool` - a method returning whether the processing has finished with completion or error
 - `cleanup(auto: Bool) -> Undefined` - a method cleaning up whatever resources were reserved by the task; the "auto" flag indicates whether the cleanup call comes from the general task processing (true) or is done explicitly (false)
 
+Additionally, it may implement `handle_exception(exception) -> Undefined` to handle exceptions thrown during the task processing. The presence of such a method will indicate to the CimpliTask that it should use exception handling.
+
 Because Feather doesn't recognise interface types, the task type is specified in JSDoc as `Struct`
 
 ---
@@ -35,10 +37,12 @@ The **Task** interface requires the following members:
 
 - `is_finished: Bool` - a variable indicating whether the task has been finished by completion or cancellation
 - `is_canceled: Bool` - a variable indicating whether the task has been canceled
+- `can_handle_exceptions: Bool` - a variable indicating whether the task allows exception handling
 - `get_result() -> Any` - a method returning the processing result, if any
 - `get_error() -> Any` - a method returning the processing error, if any
 - `init() -> Undefined` - a method initialising the underlying task processor
 - `process() -> Bool` - a method performing a single processing step, returning whether more steps are needed
+- `handle_exception(exception) -> Undefined` - a method handling exceptions occurring during the task processing; *not required when can_handle_exceptions variable is always false*
 - `check_updates() -> Undefined` - a method checking for task processing updates and sending relevant events
 - `try_cancel() -> Bool` - a method attempting to cancel the task before the result is resolved; it returns whether cancellation succeeded
 - `when_status_changed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about the task status change, sending the status value
@@ -84,6 +88,7 @@ In Cimpli library, the task manager and the worker are implemented with **Cimpli
 
 Additionally, CimpliTaskProcessor exposes the following utility methods that can be returned from the processing step:
 
+- `handle_exception(exception) -> Undefined` - fails the task with the given exception as the error
 - `finish() -> Bool` - sets the status to true and returns true (indicating completed processing)
 - `complete_with(result) -> Bool` - sets the result to the given value, the status to true and returns true (indicating completed processing)
 - `fail_with(error) -> Bool` - sets the error to the given value, the status to true and returns true (indicating completed processing)
@@ -98,10 +103,12 @@ CimpliTask implements the **Task** interface in the following way:
 
 - `is_finished` - initially false, set to true upon completion or cancellation
 - `is_canceled` - initially false, set to true only upon cancellation
+- `can_handle_exceptions` - true when the task processor has a callable `handle_exception` member; false otherwise
 - `get_result` - relays the result of the underlying processor
 - `get_error` - relays the error of the underlying processor
 - `init` - performs the underlying initialisation logic and notifies about the task being started
 - `process` - performs the underlying processing step
+- `handle_exception` - passes the exception to the processor to handle, via its `handle_exception` method
 - `check_updates` - checks the task changes and notifies about status update, progress update and task finishing; after finishing and sending events, it cleans up the underlying processor
 - `try_cancel` - if task wasn't already finished, marks it as finished and canceled, sends the task cancellation notification and cleans up the underlying processor
 - `when_status_changed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
