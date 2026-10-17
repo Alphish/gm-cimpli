@@ -128,9 +128,7 @@ function CimpliTask(_processor) constructor {
             send_event(status_changed, processor.status);
         }
         
-        var _progress = processor.get_progress();
-        if (!is_undefined(_progress))
-            send_event(task_progressed, _progress);
+        send_event(task_progressed, processor);
         
         if (processor.is_finished()) {
             is_finished = true;

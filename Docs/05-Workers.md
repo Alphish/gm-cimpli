@@ -23,7 +23,6 @@ The **TaskProcessor** interface requires the following members:
 - `error: Any` - the error causing the task failure
 - `init() -> Undefined` - a method reserving whatever resources are required by the task; by putting resource reservation in this method as opposed to the constructor, one may create many tasks in advance while only having resources reserved for ongoing ones
 - `process_step() -> Bool` - a method performing a single processing step, returning whether more steps are needed
-- `get_progress() -> Any` - a method returning the processing progress so far
 - `is_finished() -> Bool` - a method returning whether the processing has finished with completion or error
 - `cleanup(auto: Bool) -> Undefined` - a method cleaning up whatever resources were reserved by the task; the "auto" flag indicates whether the cleanup call comes from the general task processing (true) or is done explicitly (false)
 
@@ -45,13 +44,13 @@ The **Task** interface requires the following members:
 - `handle_exception(exception) -> Undefined` - a method handling exceptions occurring during the task processing; *not required when can_handle_exceptions variable is always false*
 - `check_updates() -> Undefined` - a method checking for task processing updates and sending relevant events
 - `try_cancel() -> Bool` - a method attempting to cancel the task before the result is resolved; it returns whether cancellation succeeded
-- `when_status_changed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about the task status change, sending the status value
-- `when_task_started_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about the task being initialised, sending the underlying processor instance
-- `when_task_progressed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about the progress, sending a progress object
-- `when_task_finished_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about processing finishing with completion or failure, sending the processor with its result and error
-- `when_task_completed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about successful completion, sending the task result
-- `when_task_failed_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about failure, sending the task error
-- `when_task_canceled_subject(): EventSubject` - prepares and retrieves an [event subject](/Docs/01-Events.md) notifying about cancellation
+- `when_status_changed_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about the task status change, sending the status value
+- `when_task_started_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about the task being initialised, sending the underlying processor instance
+- `when_task_progressed_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about the progress, sending the underlying processor instance
+- `when_task_finished_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about processing finishing with completion or failure, sending the processor with its result and error
+- `when_task_completed_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about successful completion, sending the task result
+- `when_task_failed_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about failure, sending the task error
+- `when_task_canceled_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about cancellation
 
 The task implementation should clean up the underlying processor after finishing or cancelling. To allow accessing task processor data from the relevant events, the cleanup should be performed after sending the events.
 
@@ -82,7 +81,6 @@ In Cimpli library, the task manager and the worker are implemented with **Cimpli
 - `error` - retrieves the cause of the failed processing, if any
 - `init` - does nothing by default
 - `process_step` - **must be implemented in the constructor derived from CimpliTaskProcessor** or otherwise set in CimpliTaskProcessor instance; otherwise, a "not implemented" exception will be thrown
-- `get_progress` - returns **undefined**, indicating no progress; the implementation may be replaced in the derived constructor
 - `is_finished` - returns whether the **status** is truthy or falsy; the implementation may be replaced in the derived constructor (e.g. to check named statuses)
 - `cleanup` - does nothing by default
 
@@ -157,11 +155,6 @@ function DungeonGeneratorProcessor(_config) : CimpliTaskProcessor() constructor 
         else
             return false;
     }
-    
-    get_progress = function() {
-        var _processed_rooms = total_rooms - array_length(remaining_rooms);
-        return { processed: _processed_rooms, total: total_rooms };
-    }
 }
 
 ```
@@ -174,8 +167,10 @@ progress_percent = 0;
 
 task = new CimpliTask(generator);
 
-task.when_task_progressed_subject().add_handler(function(_progress) {
-    progress_percent = round(100 * _progress.processed / _progress.total);
+task.when_task_progressed_subject().add_handler(function(_processor) {
+    var _total = _processor.total_rooms;
+    var _progress = _total - array_length(_processor.remaining_rooms);
+    progress_percent = round(100 * _progress / _total);
 });
 task.when_task_completed_subject().add_handler(function(_dungeon) {
     instance_create_layer(0, 0, layer, ctrl_DungeonGameplay, { dungeon_data: _dungeon });
@@ -193,6 +188,7 @@ worker.run_until(_limit);
 ```
 
 **Draw GUI** event of the `ctrl_DungeonGenerator` object:
+
 ```gml
 draw_clear(c_black);
 
