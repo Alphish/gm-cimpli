@@ -8,6 +8,9 @@ function CountUpProcessor(_terms) : CimpliTaskProcessor() constructor {
     }
     
     static process_step = function() {
+        if (keyboard_check_pressed(ord("P")))
+            throw "PANIC!";
+        
         calculated_sum += array_shift(remaining_terms);
         if (array_length(remaining_terms) <= 0)
             return complete_with(calculated_sum);
