@@ -5,6 +5,10 @@ function CimpliTask(_processor) constructor {
     /// @returns {Struct}
     processor = _processor;
     
+    /// @desc Indicates whether the task should handle processing exceptions or not.
+    /// @returns {Bool}
+    should_catch_exceptions = struct_exists(processor, "handle_exception");
+    
     /// @desc Indicates whether the task has finished (through success, failure or cancellation).
     /// @returns {Bool}
     is_finished = false;
@@ -107,6 +111,12 @@ function CimpliTask(_processor) constructor {
     /// @desc Performs a single processing step and returns whether the processing should stop.
     /// @returns {Bool}
     process = method(processor, processor.process_step);
+    
+    /// @desc Handles an exception caught during the processing.
+    /// @arg {Any} exception        The caught exception.
+    handle_exception = function(_exception) {
+        processor.handle_exception(_exception);
+    }
     
     /// @desc Checks task changes and sends appropriate updates.
     static check_updates = function() {
