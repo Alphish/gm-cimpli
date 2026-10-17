@@ -26,8 +26,7 @@ function CimpliTaskProcessor() constructor {
     /// @desc Handles an exception caught during the processing.
     /// @arg {Any} exception        The caught exception.
     static handle_exception = function(_exception) {
-        error = _exception;
-        finish();
+        fail_with(_exception);
     }
     
     /// @desc Returns the task progress so far.

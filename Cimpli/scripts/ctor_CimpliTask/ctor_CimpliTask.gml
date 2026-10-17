@@ -5,10 +5,6 @@ function CimpliTask(_processor) constructor {
     /// @returns {Struct}
     processor = _processor;
     
-    /// @desc Indicates whether the task should handle processing exceptions or not.
-    /// @returns {Bool}
-    should_catch_exceptions = struct_exists(processor, "handle_exception");
-    
     /// @desc Indicates whether the task has finished (through success, failure or cancellation).
     /// @returns {Bool}
     is_finished = false;
@@ -16,6 +12,10 @@ function CimpliTask(_processor) constructor {
     /// @desc Indicates whether the task has been canceled.
     /// @returns {Bool}
     is_canceled = false;
+    
+    /// @desc Indicates whether the task can handle processing exceptions or not.
+    /// @returns {Bool}
+    can_handle_exceptions = is_callable(processor[$ "handle_exception"]);
     
     /// @ignore
     previous_status = processor.status;

@@ -20,7 +20,7 @@ function CimpliWorker(_task) constructor {
         if (task.is_finished)
             return true;
         
-        if (task.should_catch_exceptions) {
+        if (task.can_handle_exceptions) {
             try {
                 task.process();
             } catch (_exception) {
@@ -42,7 +42,7 @@ function CimpliWorker(_task) constructor {
         if (task.is_finished)
             return true;
         
-        if (task.should_catch_exceptions) {
+        if (task.can_handle_exceptions) {
             try {
                 run_task_until(_limit, _steps = 1);
             } catch (_exception) {
@@ -76,7 +76,7 @@ function CimpliWorker(_task) constructor {
         if (task.is_finished)
             return true;
         
-        if (task.should_catch_exceptions) {
+        if (task.can_handle_exceptions) {
             try {
                 while (!task.process()) {}
             } catch (_exception) {
