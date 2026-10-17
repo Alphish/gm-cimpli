@@ -78,8 +78,10 @@ observe_start_command = new CimpliCommand(function() {
 }, can_add_observer);
 
 observe_progress_command = new CimpliCommand(function() {
-    add_observer(calculation_progressed, "Progress", function(_progress, _sender, _observer) {
-        logger.log_trace($"Calculation progress: {_progress} (#{_observer.index})");
+    add_observer(calculation_progressed, "Progress", function(_processor, _sender, _observer) {
+        var _total = _processor.terms_count;
+        var _progress = _total - array_length(_processor.remaining_terms);
+        logger.log_trace($"Calculation progress: {_progress}/{_total} (#{_observer.index})");
     });
 }, can_add_observer);
 
