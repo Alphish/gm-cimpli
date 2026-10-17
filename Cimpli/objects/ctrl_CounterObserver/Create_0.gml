@@ -35,6 +35,7 @@ begin_calculation_command = new CimpliCommand(function() {
     _task.when_task_progressed_subject().add_handler(method(calculation_progressed, calculation_progressed.send));
     _task.when_task_completed_subject().add_handler(method(calculation_completed, calculation_completed.send));
     _task.when_task_canceled_subject().add_handler(method(calculation_canceled, calculation_canceled.send));
+    _task.when_task_failed_subject().add_handler(function(_error) { logger.log_critical($"Calculation error: {_error}"); });
     worker = new CimpliWorker(_task);
 });
 
