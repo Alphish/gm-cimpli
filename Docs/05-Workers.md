@@ -12,21 +12,22 @@ The workers system uses the following types:
 
 - **TaskProcessor** interface, exposing methods for processing task logic and progress tracking
 - **Task** interface, exposing methods for managing task processing, as well as event subjects notifying about task changes
-- **Worker** interface, exposing methods for processing the underlying task
+- **Worker** interface, exposing methods for processing scheduled tasks
 
 ---
 
 The **TaskProcessor** interface requires the following members:
 
-- `status: Any` - the status of the task processing
+- `is_completed: Bool` - whether the task has been completed or not
 - `result: Any` - the result of successful task completion
-- `error: Any` - the error causing the task failure
+- `error: Any` - the error that has occurred during the task processing
 - `init() -> Undefined` - a method reserving whatever resources are required by the task; by putting resource reservation in this method as opposed to the constructor, one may create many tasks in advance while only having resources reserved for ongoing ones
 - `process_step() -> Bool` - a method performing a single processing step, returning whether more steps are needed
-- `is_finished() -> Bool` - a method returning whether the processing has finished with completion or error
 - `cleanup(auto: Bool) -> Undefined` - a method cleaning up whatever resources were reserved by the task; the "auto" flag indicates whether the cleanup call comes from the general task processing (true) or is done explicitly (false)
 
-Additionally, it may implement `handle_exception(exception) -> Undefined` to handle exceptions thrown during the task processing. The presence of such a method will indicate to the CimpliTask that it should use exception handling.
+Additionally, a custom task processor may implement:
+
+- `handle_exception(exception) -> Undefined` to handle exceptions thrown during task processing; if not present, the task manager exception handling will be applied instesad
 
 Because Feather doesn't recognise interface types, the task type is specified in JSDoc as `Struct`
 
@@ -34,17 +35,15 @@ Because Feather doesn't recognise interface types, the task type is specified in
 
 The **Task** interface requires the following members:
 
-- `is_finished: Bool` - a variable indicating whether the task has been finished by completion or cancellation
-- `is_canceled: Bool` - a variable indicating whether the task has been canceled
-- `can_handle_exceptions: Bool` - a variable indicating whether the task allows exception handling
-- `get_result() -> Any` - a method returning the processing result, if any
-- `get_error() -> Any` - a method returning the processing error, if any
-- `init() -> Undefined` - a method initialising the underlying task processor
-- `process() -> Bool` - a method performing a single processing step, returning whether more steps are needed
-- `handle_exception(exception) -> Undefined` - a method handling exceptions occurring during the task processing; *not required when can_handle_exceptions variable is always false*
-- `check_updates() -> Undefined` - a method checking for task processing updates and sending relevant events
+- `is_finished: Bool` - indicates whether the task has been finished, whether by completion, failure or cancellation
+- `is_canceled: Bool` - indicates whether the task has been canceled
+- `get_result() -> Any` - returns the processing result, if any
+- `get_error() -> Any` - returns the processing error, if any
+- `init() -> Undefined` - initialises the underlying task processor
+- `run_step() -> Bool` - performs a single processing step, returning whether more processing is needed
+- `run_until(limit: Real, [steps]: Real) -> Real` - processes the task up to the given time limit; returns the number of remaining steps
+- `run_to_end() -> Bool` - immediately executes the task until completion and returns `true` to indicate no more steps are needed.
 - `try_cancel() -> Bool` - a method attempting to cancel the task before the result is resolved; it returns whether cancellation succeeded
-- `when_status_changed_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about the task status change, sending the status value
 - `when_task_started_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about the task being initialised, sending the underlying processor instance
 - `when_task_progressed_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about the progress, sending the underlying processor instance
 - `when_task_finished_subject(): EventSubject` - a method providing an [event subject](/Docs/01-Events.md) notifying about processing finishing with completion or failure, sending the processor with its result and error
@@ -61,10 +60,10 @@ Because Feather doesn't recognise interface types, the task type is specified in
 The **Worker** interface requires the following methods:
 
 - `is_busy() -> Bool` - indicates whether the worker manages an ongoing task
-- `run_step() -> Bool` - runs a single processing step of the underlying task and returns whether the task was finished
-- `run_until(limit: Real, [steps]: Real) -> Bool` - runs as many steps as possible within the given time limit, with an optional number of guaranteed steps (1 by default); returns whether the task was finished
-- `run_to_end() -> Bool` - runs the underlying task until completion or interruption and returns whether the task was finished
-- `try_cancel([task]: Task) -> Bool` - attempts to cancel a given task, or all of the worker's task if no task is specified
+- `run_step() -> Bool` - runs a single processing step of the ongoing task and returns whether the task was finished
+- `run_until(limit: Real, [steps]: Real) -> Bool` - runs as many steps as possible within the given time limit, with an optional number of guaranteed steps (1 by default); returns whether the processing has finished
+- `run_to_end() -> Bool` - immediately processes any remaining tasks until no more processing is needed
+- `try_cancel([task]: Task) -> Bool` - attempts to cancel a given task, or all of the worker's tasks if no task is specified
 
 Because Feather doesn't recognise interface types, the worker type is specified in JSDoc as `Struct`
 
@@ -76,20 +75,17 @@ In Cimpli library, the task manager and the worker are implemented with **Cimpli
 
 **CimpliTaskProcessor** is a base for specific task processor implementations. Its constructor has no arguments. It stubs/implements the **TaskProcessor** interface in the following way:
 
-- `status` - set to **false** when the task is not finished, set to **true** otherwise
+- `is_completed` - starts out as **false**, set to **true** upon completion
 - `result` - retrieves the result of the successful completion, if any
 - `error` - retrieves the cause of the failed processing, if any
 - `init` - does nothing by default
-- `process_step` - **must be implemented in the constructor derived from CimpliTaskProcessor** or otherwise set in CimpliTaskProcessor instance; otherwise, a "not implemented" exception will be thrown
-- `is_finished` - returns whether the **status** is truthy or falsy; the implementation may be replaced in the derived constructor (e.g. to check named statuses)
+- `process_step` - **must be implemented in the constructor derived from CimpliTaskProcessor** or otherwise set in CimpliTaskProcessor instance; without that, a "not implemented" exception will be thrown
 - `cleanup` - does nothing by default
 
 Additionally, CimpliTaskProcessor exposes the following utility methods that can be returned from the processing step:
 
-- `handle_exception(exception) -> Undefined` - fails the task with the given exception as the error
-- `finish() -> Bool` - sets the status to true and returns true (indicating completed processing)
-- `complete_with(result) -> Bool` - sets the result to the given value, the status to true and returns true (indicating completed processing)
-- `fail_with(error) -> Bool` - sets the error to the given value, the status to true and returns true (indicating completed processing)
+- `complete() -> Bool` - sets the **is_completed** flag; returns **true**
+- `complete_with(result) -> Bool` - assigns the given value to the **result** variable and sets the **is_completed** flag; returns **true**
 
 ---
 
@@ -101,15 +97,13 @@ CimpliTask implements the **Task** interface in the following way:
 
 - `is_finished` - initially false, set to true upon completion or cancellation
 - `is_canceled` - initially false, set to true only upon cancellation
-- `can_handle_exceptions` - true when the task processor has a callable `handle_exception` member; false otherwise
 - `get_result` - relays the result of the underlying processor
 - `get_error` - relays the error of the underlying processor
 - `init` - performs the underlying initialisation logic and notifies about the task being started
-- `process` - performs the underlying processing step
-- `handle_exception` - passes the exception to the processor to handle, via its `handle_exception` method
-- `check_updates` - checks the task changes and notifies about status update, progress update and task finishing; after finishing and sending events, it cleans up the underlying processor
+- `run_step` - performs a single step of the underlying processor's logic, handling any errors if needed
+- `run_until` - performs the underlying processor's logic until the given time limit, handling any errors if needed
+- `run_to_end` - performs the underlying processor's logic until completion or an error
 - `try_cancel` - if task wasn't already finished, marks it as finished and canceled, sends the task cancellation notification and cleans up the underlying processor
-- `when_status_changed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
 - `when_task_started_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
 - `when_task_progressed_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
 - `when_task_finished_subject` - prepares an instance of CimpliEventSubject if not present already, then returns the subject
@@ -119,19 +113,19 @@ CimpliTask implements the **Task** interface in the following way:
 
 ---
 
-**CimpliWorker** is a basic worket implementation, managing a single underlying task. Its constructor has the following arguments:
-
-- `task: Task` - the underlying task to process
-
-Because this implementation is meant to manage only single tasks, the underlying task is initialised within the worker constructor.
-
-CimpliWorker implements the **Worker** interface in the following way:
+**CimpliWorker** is a basic worket implementation, managing a queue of tasks. Its constructor has no arguments. It implements the **Worker** interface in the following way:
 
 - `is_busy` - returns whether the underlying task was finished
-- `run_step` - performs a single task processing step, then sends the progress update; if no more processing steps are needed, attempts the task completion
-- `run_until` - performs processing steps until reaching the time limit, then sends the progress update; if no more processing steps are needed, attempts the task completion
-- `run_to_end` - performs task processing steps until it's indicated no more steps are needed, then sends the progress update and attempts the task completion
-- `try_cancel` - attempts to cancel the underlying task; if a specific task is given, it will be cancelled only if it's the worker's underlying task
+- `run_step` - performs a single step of the ongoing task
+- `run_until` - processes scheduled tasks until the given time limit
+- `run_to_end` - processes all the tasks in the queue until completion or interruption
+- `try_cancel` - attempts to cancel the given task if one is scheduled in the worker; if no task is given, attempts to cancel all tasks in the queue
+
+Additionally, CimpliWorker exposes the following method:
+
+- `schedule_task(task: Task) -> Undefined` - adds the given task to the worker queue
+
+- 
 
 ## Example
 
@@ -162,6 +156,7 @@ function DungeonGeneratorProcessor(_config) : CimpliTaskProcessor() constructor 
 **Create** event of the `ctrl_DungeonGenerator` object, with a `config` object variable:
 
 ```gml
+woirker = new CimpliWorker();
 generator = new DungeonGeneratorProcessor(config);
 progress_percent = 0;
 
@@ -177,7 +172,7 @@ task.when_task_completed_subject().add_handler(function(_dungeon) {
     instance_destroy();
 });
 
-worker = new CimpliWorker(task);
+worker.schedule_task(task);
 ```
 
 **Step** event of the `ctrl_DungeonGenerator` object:

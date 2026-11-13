@@ -13,16 +13,6 @@ function CimpliTask(_processor) constructor {
     /// @returns {Bool}
     is_canceled = false;
     
-    /// @desc Indicates whether the task can handle processing exceptions or not.
-    /// @returns {Bool}
-    can_handle_exceptions = is_callable(processor[$ "handle_exception"]);
-    
-    /// @ignore
-    previous_status = processor.status;
-    
-    /// @ignore
-    status_changed = undefined;
-    
     /// @ignore
     task_started = undefined;
     
@@ -40,13 +30,6 @@ function CimpliTask(_processor) constructor {
     
     /// @ignore
     task_canceled = undefined;
-    
-    /// @desc Prepares and retrieves the event subject notifying about the task status changing.
-    /// @returns {Struct}
-    static when_status_changed_subject = function() {
-        status_changed ??= new CimpliEventSubject(self);
-        return status_changed;
-    }
     
     /// @desc Prepares and retrieves the event subject notifying about the task starting.
     /// @returns {Struct}
@@ -108,29 +91,97 @@ function CimpliTask(_processor) constructor {
         send_event(task_started, processor);
     }
     
-    /// @desc Performs a single processing step and returns whether the processing should stop.
+    /// @desc Performs a single processing step. Returns whether more processing is required.
     /// @returns {Bool}
-    process = method(processor, processor.process_step);
-    
-    /// @desc Handles an exception caught during the processing.
-    /// @arg {Any} exception        The caught exception.
-    handle_exception = function(_exception) {
-        processor.handle_exception(_exception);
+    static run_step = function() {
+        if (is_finished)
+            return true;
+        
+        var _result = false;
+        try {
+            _result = processor.process_step();
+        } catch (_exception) {
+            handle_exception(_exception);
+        }
+        
+        check_updates();
+        
+        // checking both finishing variable and the processing step result
+        // because a processor may return true to indicate more processing is not immedaitely needed, but may be resumed later
+        // (e.g. because the processor has to wait for an asynchronous response)
+        return is_finished || _result;
     }
     
-    /// @desc Checks task changes and sends appropriate updates.
+    /// @desc Processes the task up to the given time limit. Returns 0 when more processing is required, or 1 + remaining steps when no more processing is needed.
+    /// @arg {Real} limit       The time limit after which processing should stop.
+    /// @arg {Real} [steps]     A number of steps to perform regardless of the time limit.
+    /// @returns {Real}
+    static run_until = function(_limit, _steps = 1) {
+        if (is_finished)
+            return true;
+        
+        var _remaining_steps = 0;
+        try {
+            _remaining_steps = process_until(_limit, _steps);
+        } catch (_exception) {
+            handle_exception(_exception);
+        }
+        
+        check_updates();
+        return _remaining_steps >= 0 ? _remaining_steps + 1 : (is_finished ? 1 : 0);
+    }
+    
+    /// @ignore
+    static process_until = function(_limit, _steps) {
+        var _result = false;
+        
+        while (_steps-- > 0) {
+            _result = processor.process_step();
+            if (_result)
+                return _steps;
+        }
+        
+        while (get_timer() <= _limit) {
+            _result = processor.process_step();
+            if (_result)
+                return 0;
+        }
+        
+        return -1;
+    }
+    
+    /// @desc Immediately processes the task until a completion or a failure.
+    /// @returns {Bool}
+    static run_to_end = function(_limit, _steps = 1) {
+        if (is_finished)
+            return true;
+        
+        try {
+            while (!processor.process_step()) {}
+        } catch (_exception) {
+            handle_exception(_exception);
+        }
+        
+        check_updates();
+        return true;
+    }
+    
+    /// @ignore
+    static handle_exception = function(_exception) {
+        if (is_callable(processor[$ "handle_exception"]))
+            processor.handle_exception(_exception);
+        else
+            processor.error = _exception;
+    }
+    
+    /// @ignore
     static check_updates = function() {
         if (is_finished)
-            return;
-        
-        if (processor.status != previous_status) {
-            previous_status = processor.status;
-            send_event(status_changed, processor.status);
-        }
+            return true;
         
         send_event(task_progressed, processor);
         
-        if (processor.is_finished()) {
+        if (processor.is_completed || !is_undefined(processor.error)) {
             is_finished = true;
             send_event(task_finished, processor);
             
@@ -151,7 +202,7 @@ function CimpliTask(_processor) constructor {
         
         is_finished = true;
         is_canceled = true;
-        send_event(task_canceled);
+        send_event(task_canceled, processor);
         
         processor.cleanup(/* auto */ true);
         return true;

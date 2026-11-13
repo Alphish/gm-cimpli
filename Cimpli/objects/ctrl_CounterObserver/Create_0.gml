@@ -11,15 +11,14 @@ log_level_signal.when_value_changed_subject().add_handler(function(_value) {
 calculation_arg_signal = new CimpliSignal();
 calculation_arg_signal.when_value_changed_subject(); // setup the subject so it exists
 
-worker = undefined;
+worker = new CimpliWorker();
 calculation_started = new CimpliEventSubject(id);
 calculation_progressed = new CimpliEventSubject(id);
 calculation_completed = new CimpliEventSubject(id);
 calculation_canceled = new CimpliEventSubject(id);
 
 begin_calculation_command = new CimpliCommand(function() {
-    if (!is_undefined(worker))
-        worker.try_cancel();
+    worker.try_cancel();
     
     var _number = calculation_arg_signal.get_value();
     if (is_undefined(_number)) {
@@ -36,14 +35,13 @@ begin_calculation_command = new CimpliCommand(function() {
     _task.when_task_completed_subject().add_handler(method(calculation_completed, calculation_completed.send));
     _task.when_task_canceled_subject().add_handler(method(calculation_canceled, calculation_canceled.send));
     _task.when_task_failed_subject().add_handler(function(_error) { logger.log_critical($"Calculation error: {_error}"); });
-    worker = new CimpliWorker(_task);
+    worker.schedule_task(_task);
 });
 
 cancel_calculation_command = new CimpliCommand(function() {
     worker.try_cancel();
-    worker = undefined;
 }, function() {
-    return !is_undefined(worker) && worker.is_busy();
+    return worker.is_busy();
 });
 
 // ---------
@@ -98,7 +96,7 @@ observe_cancellation_command = new CimpliCommand(function() {
 }, can_add_observer);
 
 observe_count_command = new CimpliCommand(function() {
-    add_observer(calculation_argsignal.value_changed, "Count", function(_number, _sender, _observer) {
+    add_observer(calculation_arg_signal.value_changed, "Count", function(_number, _sender, _observer) {
         logger.log_debug($"Terms count changed to {_number} (#{_observer.index})");
     });
 }, can_add_observer);
