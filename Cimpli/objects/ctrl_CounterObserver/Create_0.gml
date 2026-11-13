@@ -96,7 +96,7 @@ observe_cancellation_command = new CimpliCommand(function() {
 }, can_add_observer);
 
 observe_count_command = new CimpliCommand(function() {
-    add_observer(calculation_argsignal.value_changed, "Count", function(_number, _sender, _observer) {
+    add_observer(calculation_arg_signal.value_changed, "Count", function(_number, _sender, _observer) {
         logger.log_debug($"Terms count changed to {_number} (#{_observer.index})");
     });
 }, can_add_observer);
