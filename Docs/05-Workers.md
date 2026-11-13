@@ -27,6 +27,7 @@ The **TaskProcessor** interface requires the following members:
 
 Additionally, a custom task processor may implement:
 
+- `prepare_update() -> Bool` to update the processing status or progress after a task run; returns whether a progress event should be sent or not
 - `handle_exception(exception) -> Undefined` to handle exceptions thrown during task processing; if not present, the task manager exception handling will be applied instesad
 
 Because Feather doesn't recognise interface types, the task type is specified in JSDoc as `Struct`
@@ -80,6 +81,7 @@ In Cimpli library, the task manager and the worker are implemented with **Cimpli
 - `error` - retrieves the cause of the failed processing, if any
 - `init` - does nothing by default
 - `process_step` - **must be implemented in the constructor derived from CimpliTaskProcessor** or otherwise set in CimpliTaskProcessor instance; without that, a "not implemented" exception will be thrown
+- `prepare_update` - always returns **true** to indicate progress should be reported after every task run; can be overriden with more specific conditions
 - `cleanup` - does nothing by default
 
 Additionally, CimpliTaskProcessor exposes the following utility methods that can be returned from the processing step:
@@ -124,8 +126,6 @@ CimpliTask implements the **Task** interface in the following way:
 Additionally, CimpliWorker exposes the following method:
 
 - `schedule_task(task: Task) -> Undefined` - adds the given task to the worker queue
-
-- 
 
 ## Example
 
