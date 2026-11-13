@@ -18,12 +18,6 @@ function CimpliTask(_processor) constructor {
     can_handle_exceptions = is_callable(processor[$ "handle_exception"]);
     
     /// @ignore
-    previous_status = processor.status;
-    
-    /// @ignore
-    status_changed = undefined;
-    
-    /// @ignore
     task_started = undefined;
     
     /// @ignore
@@ -40,13 +34,6 @@ function CimpliTask(_processor) constructor {
     
     /// @ignore
     task_canceled = undefined;
-    
-    /// @desc Prepares and retrieves the event subject notifying about the task status changing.
-    /// @returns {Struct}
-    static when_status_changed_subject = function() {
-        status_changed ??= new CimpliEventSubject(self);
-        return status_changed;
-    }
     
     /// @desc Prepares and retrieves the event subject notifying about the task starting.
     /// @returns {Struct}
@@ -130,7 +117,7 @@ function CimpliTask(_processor) constructor {
         
         send_event(task_progressed, processor);
         
-        if (processor.is_finished()) {
+        if (processor.is_completed || !is_undefined(processor.error)) {
             is_finished = true;
             send_event(task_finished, processor);
             
@@ -151,7 +138,7 @@ function CimpliTask(_processor) constructor {
         
         is_finished = true;
         is_canceled = true;
-        send_event(task_canceled);
+        send_event(task_canceled, processor);
         
         processor.cleanup(/* auto */ true);
         return true;

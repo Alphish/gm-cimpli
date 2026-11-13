@@ -1,8 +1,8 @@
 /// @desc A basic task processor base, with its processor logic.
 function CimpliTaskProcessor() constructor {
-    /// @desc The status of the task processing so far.
-    /// @returns {Any}
-    status = false;
+    /// @desc Indicates whether the task processing has completed successfully or not.
+    /// @returns {Bool}
+    is_completed = false;
     
     /// @desc The result of the task completion.
     /// @returns {Any}
@@ -23,16 +23,10 @@ function CimpliTaskProcessor() constructor {
         throw CimpliException.not_implemented(self, nameof(process_step));
     }
     
-    /// @desc Handles an exception caught during the processing.
-    /// @arg {Any} exception        The caught exception.
-    static handle_exception = function(_exception) {
-        fail_with(_exception);
-    }
-    
     /// @desc Finishes processing the task.
     /// @returns {Bool}
-    static finish = function() {
-        status = true;
+    static complete = function() {
+        is_completed = true;
         return true;
     }
     
@@ -41,21 +35,7 @@ function CimpliTaskProcessor() constructor {
     /// @returns {Bool}
     static complete_with = function(_result) {
         result = _result;
-        return finish();
-    }
-    
-    /// @desc Finishes processing the task with the given result.
-    /// @arg {Any} error        The error to fail the task with.
-    /// @returns {Bool}
-    static fail_with = function(_error) {
-        error = _error;
-        return finish();
-    }
-    
-    /// @desc Returns whether the task processing has finished or not.
-    /// @returns {Bool}
-    static is_finished = function() {
-        return bool(status);
+        return complete();
     }
     
     /// @desc Cleans up the task resources, if any.
