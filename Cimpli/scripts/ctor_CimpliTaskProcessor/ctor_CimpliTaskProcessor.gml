@@ -23,6 +23,12 @@ function CimpliTaskProcessor() constructor {
         throw CimpliException.not_implemented(self, nameof(process_step));
     }
     
+    /// @desc Updates the task processing status or progress before reporting an update. Returns whether some progress should be reported or not.
+    /// @returns {Bool}
+    static prepare_update = function() {
+        return true;
+    }
+    
     /// @desc Finishes processing the task.
     /// @returns {Bool}
     static complete = function() {

@@ -179,7 +179,8 @@ function CimpliTask(_processor) constructor {
         if (is_finished)
             return true;
         
-        send_event(task_progressed, processor);
+        if (is_callable(processor[$"prepare_update"]) && processor.prepare_update())
+            send_event(task_progressed, processor);
         
         if (processor.is_completed || !is_undefined(processor.error)) {
             is_finished = true;

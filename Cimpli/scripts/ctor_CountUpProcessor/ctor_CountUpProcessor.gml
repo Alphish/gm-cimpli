@@ -2,9 +2,11 @@ function CountUpProcessor(_terms) : CimpliTaskProcessor() constructor {
     terms_count = _terms;
     calculated_sum = 0;
     remaining_terms = undefined;
+    next_milestone = 0;
     
     static init = function() {
         remaining_terms = array_create_ext(terms_count, function(i) { return i + 1; });
+        next_milestone = (terms_count div 5000) - 1;
     }
     
     static process_step = function() {
@@ -16,6 +18,17 @@ function CountUpProcessor(_terms) : CimpliTaskProcessor() constructor {
             return complete_with(calculated_sum);
         else
             return false;
+    }
+    
+    // the update preparation prevents reporting after every run
+    // and instead it makes the task report progress every 5k terms
+    static prepare_update = function() {
+        var _bulk_remaining = array_length(remaining_terms) / 5000;
+        if (_bulk_remaining > next_milestone)
+            return false;
+        
+        next_milestone -= 1;
+        return true;
     }
     
     static cleanup = function(_auto) {
